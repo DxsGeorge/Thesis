@@ -397,6 +397,7 @@ string ColorMatcherMulti(Vec3b values, Vec3b values1)
 
 vector<Point> FindCubeCorners(vector<Point> points)
 {
+	//MUST FIX
 	vector<float> distance;
 	for (size_t i = 0; i < points.size(); i++)
 	{

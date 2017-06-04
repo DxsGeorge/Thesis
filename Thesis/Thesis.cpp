@@ -115,6 +115,7 @@ int main()
 			else if (tracking_mode == 2)
 			{
 				vector<Vec4i> lines;
+				vector<Point> edges;
 				HoughLinesP(dst, lines, 1, CV_PI / 45, thr, 10, 5);
 				for (size_t i = 0; i < lines.size(); i++)
 				{
@@ -123,6 +124,11 @@ int main()
 				if (lines.size() < 50) thr-=1;
 				else thr++;
 				cout << "lines: "<< lines.size()<<"threshold: " <<thr<<endl;
+				edges=FindCubeFace1(lines);
+				for (size_t i = 0; i < 4; ++i)
+				{
+					circle(src, edges[i], 2, Scalar(255, 255, 255), 2);
+				}
 
 			}
 			

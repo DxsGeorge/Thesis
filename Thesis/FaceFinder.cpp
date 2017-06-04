@@ -487,7 +487,7 @@ float AngletoX(Vec4i pt)
 vector<Point> FindCubeFace1(vector<Vec4i> lines)
 {
 	vector <LinePair> lp;
-	
+	vector <Point> edges;
 	
 	for (size_t i = 0; i < lines.size(); i++)
 	{
@@ -569,7 +569,7 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines)
 			if (a1 > 0.1 && a2 > 0.1) continue;
 			Point q1, q2;
 			q1 = Point(lines[j][0],lines[j][1]); q2 = Point(lines[j][2],lines[j][3]);
-			Eigen::Matrix3d v;
+			Eigen::Matrix3f v;
 			v << q1.y, 
 				q1.x, 
 				1;
@@ -602,7 +602,9 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines)
 			lp[i].evidence++;
 		}
 	}
-
+	std::sort(lp.begin(), lp.end(), [](LinePair a, LinePair b){ return (a.evidence>b.evidence); });
+	for (size_t i = 0; i < 4; ++i) edges.push_back(lp[i].getsame());
+	return edges;
 }
 
 

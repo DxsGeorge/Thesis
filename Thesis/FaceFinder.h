@@ -3,12 +3,14 @@
 #include "Line.h"
 #include "MyHash.h"
 #include "Line.h"
+#include <Eigen/Core>
 #include <Eigen/Dense>
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
 #include <map>
 #include <math.h>
 #include <array>
+#include <algorithm>
 
 using namespace std;
 using namespace cv;

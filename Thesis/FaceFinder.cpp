@@ -1,6 +1,5 @@
 #include "FaceFinder.h"
-#include "MyHash.h"
-#include "Line.h"
+
 
 float roundf(float val)
 {
@@ -395,7 +394,7 @@ string ColorMatcherMulti(Vec3b values, Vec3b values1)
 	else if (values.val[0]<150) return "blue";
 }
 
-vector<Point> FindCubeCorners(vector<Point> points)
+vector<Point2f> FindCubeCorners(vector<Point> points)
 {
 	//MUST FIX
 	vector<float> distance;
@@ -422,27 +421,191 @@ vector<Point> FindCubeCorners(vector<Point> points)
 		if (points[i].x<minx) minx = points[i].x;
 		if (points[i].x<miny) miny = points[i].y;
 	}
-	Point sticker0 = Point(minx, maxy);
-	Point sticker1 = Point(maxx, maxy);
-	Point sticker2 = Point(maxx, miny);
-	Point sticker3 = Point(minx, miny);
-	Point diag1 = sticker0 - sticker2;
-	Point diag2 = sticker1 - sticker3;
-	diag1.x = diag1.x / sqrt(diag1.x*diag1.x + diag1.y*diag1.y);
-	diag1.y = diag1.y / sqrt(diag1.x*diag1.x + diag1.y*diag1.y);
-	diag2.x = diag2.x / sqrt(diag2.x*diag2.x + diag2.y*diag2.y);
-	diag2.y = diag2.y / sqrt(diag2.x*diag2.x + diag2.y*diag2.y);
-	Point corner0 = sticker0 + mindist*diag1;
-	Point corner1 = sticker1 + mindist*diag2;
-	Point corner2 = sticker2 - mindist*diag1;
-	Point corner3 = sticker3 - mindist*diag2;
-	vector<Point> corner_points;
+	Point2f sticker0 = Point(minx, maxy);
+	Point2f sticker1 = Point(maxx, maxy);
+	Point2f sticker2 = Point(maxx, miny);
+	Point2f sticker3 = Point(minx, miny);
+	Point2f diag1, diag2;
+	diag1.x = sticker0.x - sticker2.x;
+	diag1.y = sticker0.y - sticker2.y;
+	diag2.x = sticker1.x - sticker3.x;
+	diag2.y = sticker1.y - sticker3.y;
+	Point2f absdiag1, absdiag2;
+	absdiag1.x = diag1.x / sqrt(diag1.x*diag1.x + diag1.y*diag1.y);
+	absdiag1.y = diag1.y / sqrt(diag1.x*diag1.x + diag1.y*diag1.y);
+	absdiag2.x = diag2.x / sqrt(diag2.x*diag2.x + diag2.y*diag2.y);
+	absdiag2.y = diag2.y / sqrt(diag2.x*diag2.x + diag2.y*diag2.y);
+	Point2f corner0 = sticker0 + mindist*absdiag1;
+	Point2f corner1 = sticker1 + mindist*absdiag2;
+	Point2f corner2 = sticker2 - mindist*absdiag1;
+	Point2f corner3 = sticker3 - mindist*absdiag2;
+	vector<Point2f> corner_points;
 	corner_points.push_back(corner0);
 	corner_points.push_back(corner1);
 	corner_points.push_back(corner2);
 	corner_points.push_back(corner3);
 	return corner_points;
 }
+
+vector<Point2f> FindCubeCorners2(vector<Point> points)
+{
+	vector<Point2f> corners;
+	float maxdist;
+	vector<Point> diagpoints;
+	diagpoints.reserve(2);
+	maxdist = Distance(points[0], points[1]);
+	diagpoints[0] = points[0];
+	diagpoints[1] = points[1];
+	for (size_t i = 0; i < points.size(); i++)
+	{
+		for (size_t j = i + 1; j>points.size(); j++)
+		{
+			if (Distance(points[i], points[j]) > maxdist)
+			{
+				maxdist = Distance(points[i], points[j]);
+				diagpoints[0] = points[0];
+				diagpoints[1] = points[1];
+			}
+		}
+	}
+	float angle = atan((diagpoints[0].y - diagpoints[1].y) / (diagpoints[0].x - diagpoints[1].x));
+	float sidesize = maxdist / sqrt(2);
+
+	return corners;
+}
+
+bool FindIntersection(Vec4i l1, Vec4i l2, Point &pt)
+{
+	 
+}
+
+float AngletoX(Vec4i pt)
+{
+	return atan(float(pt[1] - pt[3] )/ float(pt[0] - pt[2]));
+}
+
+vector<Point> FindCubeFace1(vector<Vec4i> lines)
+{
+	vector <LinePair> lp;
+	
+	
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		for (size_t j = i + 1; j < lines.size(); j++)
+		{
+			int matched;
+			LinePair hypothesis;
+			Point p1, p2, p3, p4;
+			float dd1, dd2;
+			p1 = Point(lines[i][0], lines[i][1]);
+			p2 = Point(lines[i][2], lines[i][3]);
+			p3 = Point(lines[j][0], lines[j][1]);
+			p4 = Point(lines[j][2], lines[j][3]);
+			dd1 = Distance(p1, p2);
+			dd2 = Distance(p3, p4);
+			if (max(dd1, dd2) / min(dd1, dd2) > 1.3) continue;
+			if (SamePoint(p1, p3, 10))
+			{
+				hypothesis = LinePair(lines[i], lines[j]);
+				matched++;
+			}
+			if (SamePoint(p1, p4, 10))
+			{
+				hypothesis = LinePair(lines[i], lines[j]);
+				matched++;
+			}
+			if (SamePoint(p2, p3, 10))
+			{
+				hypothesis = LinePair(lines[i], lines[j]);
+				matched++;
+			}
+			if (SamePoint(p2, p4, 10))
+			{
+				hypothesis = LinePair(lines[i], lines[j]);
+				matched++;
+			}
+			if (matched == 0)
+			{
+				//check intersection
+			}
+			if (matched == 1)
+			{
+				float ang1, ang2, ang;
+				ang1 = atan(float(p1.y - p2.y) / float(p1.x - p2.x));
+				ang2 = atan(float(p3.y - p4.y) / float(p3.x - p4.x));
+				if (ang1 < 0) ang1 += CV_PI;
+				if (ang2 < 0) ang2 += CV_PI;
+				ang = abs(abs(ang2 - ang1) - CV_PI / 2);
+				if (ang < 0.5) lp.push_back(hypothesis);
+			}
+		}
+	}
+	for (size_t i = 0; i < lp.size(); i++)
+	{
+		Point same, end1, end2;
+		same = lp[i].getsame();
+		end1 = lp[i].getend1();
+		end2 = lp[i].getend2();
+		float ang1, ang2, distance;
+		distance = lp[i].getDist();
+		ang1 = atan((end1.y-same.y)/(end1.x-same.x));
+		ang2 = atan((end2.y - same.y) / (end2.x - same.x));
+		if (ang1 < 0) ang1 += CV_PI;
+		if (ang2 < 0) ang2 += CV_PI;
+		distance = 1.7*distance;
+		int evidence = 0;
+		int totallines = 0;
+		Eigen::Matrix3f A(3, 3), Ainv(3,3);
+		A << end2.x - same.x, end1.x - same.x, 0,
+			end2.y - same.y, end1.y - same.y, 0,
+			0, 0, 1;
+		Ainv = A.inverse();
+		for (size_t j = 0; j < lines.size(); j++)
+		{
+			float ang = AngletoX(lines[j]);
+			float a1, a2;
+			a1 = abs(abs(ang - ang1) - CV_PI / 2);
+			a2 = abs(abs(ang - ang2) - CV_PI / 2);
+			if (a1 > 0.1 && a2 > 0.1) continue;
+			Point q1, q2;
+			q1 = Point(lines[j][0],lines[j][1]); q2 = Point(lines[j][2],lines[j][3]);
+			Eigen::Matrix3d v;
+			v << q1.y, 
+				q1.x, 
+				1;
+			Eigen::Matrix3f vp = Ainv*v;
+			if (vp(0, 0) > 1.1 || vp(0, 0)<-0.1) continue;
+			if (vp(1, 0) > 1.1 || vp(1, 0)<-0.1) continue;
+			if ((abs(vp(0, 0) - 1 / 3.0)>0.06 )
+				&& 
+				(abs(vp(0, 0) - 2 / 3.0) > 0.06)
+				&&
+				(abs(vp(1, 0) - 1 / 3.0) > 0.06 )
+				&& 
+				(abs(vp(1, 0) - 2 / 3.0) > 0.06)) continue;
+			v.resize(0,0);
+			v << q2.y,
+				q2.x,
+				1;
+			vp.resize(0, 0);
+			vp = Ainv*v;
+			if (vp(0, 0) > 1.1 || vp(0, 0)<-0.1) continue;
+			if (vp(1, 0) > 1.1 || vp(1, 0)<-0.1) continue;
+			if ((abs(vp(0, 0) - 1 / 3.0)>0.06)
+				&&
+				(abs(vp(0, 0) - 2 / 3.0) > 0.06)
+				&&
+				(abs(vp(1, 0) - 1 / 3.0) > 0.06)
+				&&
+				(abs(vp(1, 0) - 2 / 3.0) > 0.06)) continue;
+
+			lp[i].evidence++;
+		}
+	}
+
+}
+
+
 
 
 

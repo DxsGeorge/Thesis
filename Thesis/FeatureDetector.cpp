@@ -138,9 +138,9 @@ bool BlobDetectFeatures(Mat src, Mat &dst, vector<Point> &points, vector<KeyPoin
 	params.filterByArea=true;
 	params.minArea=300;
 	params.filterByCircularity = true;
-	params.minCircularity = 0.5;
+	params.minCircularity = 0.1;
 	params.filterByInertia = true;
-	params.minInertiaRatio = 0.8;
+	params.minInertiaRatio = 0.1;
 	SimpleBlobDetector detector(params);
 	detector.detect( src, keypoints);
 	drawKeypoints( src, keypoints, dst, Scalar(0,0,255), 2 );
@@ -178,3 +178,4 @@ bool BlobDetectFeatures(Mat src, Mat &dst, vector<Point> &points, vector<KeyPoin
 	}
 	return false;
 }
+

@@ -70,6 +70,71 @@ bool Line::same_as(Line l,int offset1, float offset2)
 	else return false;
 }
 
+LinePair::LinePair()
+{};
+
+LinePair::LinePair(Vec4i line1, Vec4i line2)
+{
+	this->line1 = line1;
+	this->line2 = line2;
+	if (SamePoint(Point(line1[0], line1[1]), Point(line2[0], line2[1]), 10))
+	{
+		this->same = Point(line1[0], line1[1]);
+		this->end1 = Point(line1[2], line1[3]);
+		this->end2 = Point(line2[2], line2[3]);
+	}
+	if (SamePoint(Point(line1[0], line1[1]), Point(line2[2], line2[3]), 10))
+	{
+		this->same = Point(line1[0], line1[1]);
+		this->end1 = Point(line1[2], line1[3]);
+		this->end2 = Point(line2[0], line2[1]);
+	}
+	if (SamePoint(Point(line1[2], line1[3]), Point(line2[0], line2[1]), 10))
+	{
+		this->same = Point(line1[2], line1[3]);
+		this->end1 = Point(line1[0], line1[1]);
+		this->end2 = Point(line2[2], line2[3]);
+	}
+	if (SamePoint(Point(line1[2], line1[3]), Point(line2[2], line2[3]), 10))
+	{
+		this->same = Point(line1[2], line1[3]);
+		this->end1 = Point(line1[0], line1[1]);
+		this->end2 = Point(line2[0], line2[1]);
+	}
+	this->distance = Distance(Point(line1[0], line1[1]), Point(line1[2], line1[3]));
+}
+
+Vec4i LinePair::getLine1()
+{
+	return this->line1;
+}
+
+Vec4i LinePair::getLine2()
+{
+	return this->line2;
+}
+
+float LinePair::getDist()
+{
+	return distance;
+}
+
+Point LinePair::getend1()
+{
+	return this->end1;
+}
+
+Point LinePair::getend2()
+{
+	return this->end2;
+}
+
+Point LinePair::getsame()
+{
+	return this->same;
+}
+
+
 bool SamePoint (Point p1, Point p2, int offset) 
 {
 	return (abs(p1.x-p2.x)<offset && abs(p1.y-p2.y)<offset);

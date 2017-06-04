@@ -21,6 +21,30 @@ class Line
 
 };
 
+class LinePair 
+{
+	private:
+		Vec4i line1;
+		Vec4i line2;
+		Point end1, end2, same;
+		float distance;
+		
+
+	public:
+		LinePair();
+		LinePair(Vec4i line1, Vec4i line2);
+		int evidence;
+		Vec4i getLine1();
+		Vec4i getLine2();
+		Point getend1();
+		Point getend2();
+		Point getsame();
+		float getDist();
+
+
+};
+
+
 float absDifference(Point p1, Point p2);
 
 bool SamePoint (Point p1, Point p2, int offset);

@@ -44,6 +44,7 @@ int main()
 	int shown_face_count = 0;
 	int thr = 100;
 	int succ = 0;
+	bool detected = false;
 	vector<Point> prevface{ Point(0, 0), Point(5, 0), Point(0, 5) };
 	while (true)
 	{
@@ -126,7 +127,7 @@ int main()
 				if (lines.size() < 50) thr=max(thr-1,2);
 				else thr++;
 				cout << "lines: "<< lines.size()<<"threshold: " <<thr<<endl;
-				edges=FindCubeFace1(lines,prevface,succ);
+				edges=FindCubeFace1(lines,prevface,succ, detected);
 				for (size_t i = 0;edges.size()>3 && i < 4; ++i)
 				{
 					circle(src, edges[i], 2, Scalar(255, 255, 255), 2);

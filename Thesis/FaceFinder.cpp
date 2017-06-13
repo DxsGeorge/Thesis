@@ -474,26 +474,39 @@ vector<Point2f> FindCubeCorners2(vector<Point> points)
 	return corners;
 }
 
-bool FindIntersection(Vec4i l1, Vec4i l2, Point &pt)
+bool FindIntersection(Vec4i l1, Vec4i l2, float &ua, float &ub, Point &pt)
 {
-	 
+	Point p1(l1[0], l1[1]) , p2 (l1[2], l1[3]), p3 (l2[0], l2[1]) , p4(l2[2], l2[3]);
+	float den = (p4.y - p3.y)*(p2.x - p1.x) - (p4.x - p3.x)*(p2.y - p1.y);
+	if (abs(den) < 0.1) return false;
+	ua = (p4.x - p3.x)*(p1.y - p3.y) - (p4.y - p3.y)*(p1.x - p3.x);
+	ub = (p2.x - p1.x)*(p1.y - p3.y) - (p2.y - p1.y)*(p1.x - p3.x);
+	ua = ua / den;
+	ub = ub / den;
+	float x = p1.x + ua*(p2.x - p1.x);
+	float y = p1.y + ua*(p2.y - p1.y);
+	pt = Point(x, y);
+	if (ua>0 && ub>0 && ua<1 && ub<1) return true;
 }
 
 float AngletoX(Vec4i pt)
 {
-	return atan(float(pt[1] - pt[3] )/ float(pt[0] - pt[2]));
+	float ang = atan(float(pt[1] - pt[3] )/ float(pt[0] - pt[2]));
+	ang >= 0 ? ang : ang += CV_PI;
+	return ang;
 }
 
-vector<Point> FindCubeFace1(vector<Vec4i> lines)
+vector<Point> FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, bool detected)
 {
 	vector <LinePair> lp;
-	vector <Point> edges;
-	
+	vector <Point> edges, test, minps, pt;
+	float qwe = 0.06;
+	int minch = 10000;
 	for (size_t i = 0; i < lines.size(); i++)
 	{
 		for (size_t j = i + 1; j < lines.size(); j++)
 		{
-			int matched;
+			int matched=0;
 			LinePair hypothesis;
 			Point p1, p2, p3, p4;
 			float dd1, dd2;
@@ -526,7 +539,38 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines)
 			}
 			if (matched == 0)
 			{
-				//check intersection
+				//check intersection at 1/3 or 2/3
+				Point pt,temp,same,end1,end2;
+				float ua, ub;
+				if (FindIntersection(lines[i], lines[j],ua, ub, pt))
+				{
+					int ok1 = 0, ok2 = 0;
+					if (abs(ua - 1.0 / 3) < 0.05) ok1 = 1;
+					if (abs(ua - 2.0 / 3) < 0.05)  ok1 = 2;
+					if (abs(ub - 1.0 / 3)<0.05)  ok2 = 1;
+					if (abs(ub - 2.0 / 3)<0.05) ok2 = 2;
+					if (ok1>0 && ok2>0)
+					{
+						if (ok1 == 2)
+						{
+							temp =p1;
+							p1 = p2;
+							p2 = temp;
+							
+						}
+						if (ok2 == 2)
+						{
+							temp = p3;
+							p3 = p4;
+							p4 = temp;
+						}
+						end1 = Point((p3.x + 2.0 / 3 * (p2.x - p1.x)), (p3.y + 2.0 / 3 * (p2.y - p1.y)));
+						end2 = Point((p1.x + 2.0 / 3 * (p4.x - p3.x)), (p1.y + 2.0 / 3 * (p4.y - p3.y)));
+						same = Point((p1.x - 1.0 / 3 * (p4.x - p3.x)), (p1.y - 1.0 / 3 * (p4.y - p3.y)));
+						hypothesis = LinePair(same, end1, end2);
+						matched = 1;
+					}
+				}
 			}
 			if (matched == 1)
 			{
@@ -548,17 +592,19 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines)
 		end2 = lp[i].getend2();
 		float ang1, ang2, distance;
 		distance = lp[i].getDist();
-		ang1 = atan((end1.y-same.y)/(end1.x-same.x));
-		ang2 = atan((end2.y - same.y) / (end2.x - same.x));
+		if (end1.x - same.x != 0) ang1 = atan((end1.y - same.y) / (end1.x - same.x));
+		else ang1 = CV_PI / 2;
+		if (end2.x - same.x != 0) ang2 = atan((end2.y - same.y) / (end2.x - same.x));
+		else ang2 = CV_PI / 2;
 		if (ang1 < 0) ang1 += CV_PI;
 		if (ang2 < 0) ang2 += CV_PI;
 		distance = 1.7*distance;
 		int evidence = 0;
 		int totallines = 0;
-		Eigen::Matrix3f A(3, 3), Ainv(3,3);
-		A << end2.x - same.x, end1.x - same.x, 0,
-			end2.y - same.y, end1.y - same.y, 0,
-			0, 0, 1;
+		Eigen::Matrix3f A, Ainv;
+		A <<	end2.x - same.x, end1.x - same.x, same.x,
+				end2.y - same.y, end1.y - same.y, same.y,
+				0              , 0              , 1;
 		Ainv = A.inverse();
 		for (size_t j = 0; j < lines.size(); j++)
 		{
@@ -569,45 +615,92 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines)
 			if (a1 > 0.1 && a2 > 0.1) continue;
 			Point q1, q2;
 			q1 = Point(lines[j][0],lines[j][1]); q2 = Point(lines[j][2],lines[j][3]);
-			Eigen::Matrix3f v;
-			v << q1.y, 
-				q1.x, 
-				1;
-			Eigen::Matrix3f vp = Ainv*v;
-			if (vp(0, 0) > 1.1 || vp(0, 0)<-0.1) continue;
-			if (vp(1, 0) > 1.1 || vp(1, 0)<-0.1) continue;
-			if ((abs(vp(0, 0) - 1 / 3.0)>0.06 )
+			Eigen::Matrix<float, 3, 1> v;
+			v <<	q1.y, 
+					q1.x, 
+					1;
+			Eigen::Matrix<float, 3, 1> vp1 = Ainv*v;
+			if (vp1(0, 0) > 1.1 || vp1(0, 0)<-0.1) continue;
+			if (vp1(1, 0) > 1.1 || vp1(1, 0)<-0.1) continue;
+			if ((abs(vp1(0, 0) - 1 / 3.0) > qwe )
 				&& 
-				(abs(vp(0, 0) - 2 / 3.0) > 0.06)
+				(abs(vp1(0, 0) - 2 / 3.0) > qwe )
 				&&
-				(abs(vp(1, 0) - 1 / 3.0) > 0.06 )
+				(abs(vp1(1, 0) - 1 / 3.0) > qwe )
 				&& 
-				(abs(vp(1, 0) - 2 / 3.0) > 0.06)) continue;
-			v.resize(0,0);
-			v << q2.y,
-				q2.x,
-				1;
-			vp.resize(0, 0);
-			vp = Ainv*v;
-			if (vp(0, 0) > 1.1 || vp(0, 0)<-0.1) continue;
-			if (vp(1, 0) > 1.1 || vp(1, 0)<-0.1) continue;
-			if ((abs(vp(0, 0) - 1 / 3.0)>0.06)
+				(abs(vp1(1, 0) - 2 / 3.0) > qwe )) continue;
+			Eigen::Matrix<float , 3, 1> v2;
+			v2 <<	q2.y,
+					q2.x,
+					1;
+			Eigen::Matrix<float, 3, 1> vp2 = Ainv*v2;
+			if (vp2(0, 0) > 1.1 || vp2(0, 0)<-0.1) continue;
+			if (vp2(1, 0) > 1.1 || vp2(1, 0)<-0.1) continue;
+			if ((abs(vp2(0, 0) - 1 / 3.0) > qwe)
 				&&
-				(abs(vp(0, 0) - 2 / 3.0) > 0.06)
+				(abs(vp2(0, 0) - 2 / 3.0) > qwe)
 				&&
-				(abs(vp(1, 0) - 1 / 3.0) > 0.06)
+				(abs(vp2(1, 0) - 1 / 3.0) > qwe)
 				&&
-				(abs(vp(1, 0) - 2 / 3.0) > 0.06)) continue;
-
+				(abs(vp2(1, 0) - 2 / 3.0) > qwe)) continue;
 			lp[i].evidence++;
 		}
 	}
 	std::sort(lp.begin(), lp.end(), [](LinePair a, LinePair b){ return (a.evidence>b.evidence); });
-	for (size_t i = 0; i < 4; ++i) edges.push_back(lp[i].getsame());
-	return edges;
+	for (size_t i = 0; i < lp.size(); ++i)
+	{
+
+		if (lp[i].evidence > 0.05*lines.size())
+		{
+			Point same(lp[i].getsame()), end1(lp[i].getend1()), end2(lp[i].getend2());
+			Point p3(end2.x + end1.x - same.x, end2.y + end1.y - same.y);
+			test = { same, end1, end2, p3 };
+			p3 = Point(prevface[2].x + prevface[1].x - prevface[0].x, prevface[2].y + prevface[1].y - prevface[0].y);
+			vector<Point> tc{ prevface[0], prevface[1], prevface[2] };
+			float ch = compfaces(test, tc);
+			if (ch < minch)
+			{
+				minch = ch;
+				minps = { same, end1, end2 };
+			}
+		}
+	}
+	if (minps.size() > 0)
+	{
+		prevface = minps;
+		if (minch < 10)
+		{
+			succ += 1;
+			pt = prevface;
+			detected = true;
+		}		 
+	}
+	else
+	{
+		succ = 0;	
+	}
+	if (succ > 2)
+	{
+		pt.empty();
+		pt = {};
+	}
+	
 }
 
-
-
+float compfaces(vector<Point> f1, vector<Point> f2)
+{
+	int totd = 0;
+	for (size_t i = 0; i < f1.size(); ++i)
+	{
+		int mind = 10000;
+		for (size_t j = 0; j < f2.size(); ++j)
+		{
+			float d = Distance(f1[i], f2[j]);
+			if (d < mind) mind = d;
+		}
+		totd += mind;
+	}
+	return totd / 4;
+}
 
 

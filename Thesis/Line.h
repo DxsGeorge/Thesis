@@ -33,6 +33,7 @@ class LinePair
 	public:
 		LinePair();
 		LinePair(Vec4i line1, Vec4i line2);
+		LinePair(Point same, Point end1, Point end2);
 		int evidence;
 		Vec4i getLine1();
 		Vec4i getLine2();

@@ -43,6 +43,8 @@ int main()
 	vector<Point2f> pointsf, pointsf_next;
 	int shown_face_count = 0;
 	int thr = 100;
+	int succ = 0;
+	vector<Point> prevface{ Point(0, 0), Point(5, 0), Point(0, 5) };
 	while (true)
 	{
 
@@ -106,7 +108,7 @@ int main()
 				pts.push_back(recpoints[2]);
 				pts.push_back(recpoints[3]);
 				ShowFaceCorner(src, pts);
-				line(src, recpoints[0], recpoints[1], Scalar(255, 255, 255),2);
+				line(src, recpoints[0], recpoints[1], Scalar(255, 255, 255), 2);
 				line(src, recpoints[1], recpoints[2], Scalar(255, 255, 255), 2);
 				line(src, recpoints[2], recpoints[3], Scalar(255, 255, 255), 2);
 				line(src, recpoints[3], recpoints[0], Scalar(255, 255, 255), 2);
@@ -121,11 +123,11 @@ int main()
 				{
 					line(src, Point(lines[i][0], lines[i][1]), Point(lines[i][2], lines[i][3]), Scalar(0, 0, 255), 1);
 				}
-				if (lines.size() < 50) thr-=1;
+				if (lines.size() < 50) thr=max(thr-1,2);
 				else thr++;
 				cout << "lines: "<< lines.size()<<"threshold: " <<thr<<endl;
-				edges=FindCubeFace1(lines);
-				for (size_t i = 0; i < 4; ++i)
+				edges=FindCubeFace1(lines,prevface,succ);
+				for (size_t i = 0;edges.size()>3 && i < 4; ++i)
 				{
 					circle(src, edges[i], 2, Scalar(255, 255, 255), 2);
 				}

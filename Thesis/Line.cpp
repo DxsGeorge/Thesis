@@ -102,6 +102,18 @@ LinePair::LinePair(Vec4i line1, Vec4i line2)
 		this->end2 = Point(line2[0], line2[1]);
 	}
 	this->distance = Distance(Point(line1[0], line1[1]), Point(line1[2], line1[3]));
+	this->evidence = 0;
+}
+
+LinePair::LinePair(Point same, Point end1, Point end2)
+{
+	this->same = same;
+	this->end1 = end1;
+	this->end2 = end2;
+	this->line1 = Vec4i{ same.x, same.y, end1.x, end1.y };
+	this->line2 = Vec4i{ same.x, same.y, end2.x, end2.y };
+	this->distance = (Distance(same, end1)+Distance(same,end2))/2.0;
+	this->evidence = 0;
 }
 
 Vec4i LinePair::getLine1()

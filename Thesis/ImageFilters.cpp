@@ -46,7 +46,7 @@ Mat FilterImage(Mat &src)
 		compare(src1, 100, dst1, CV_CMP_LT);
 		bitwise_and(dst, dst1, dst);
 		convertScaleAbs(dst, dst, 1, 0);
-		//Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
+		Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
 		//dilate(dst, dst, kernel);
 		//erode(dst, dst, kernel);
 		//dilate(dst, dst, kernel);

@@ -50,4 +50,7 @@ bool FindIntersection(Vec4i l1, Vec4i l2, Point &pt);
 
 float AngletoX(Vec4i pt);
 
-vector<Point> FindCubeFace1(vector<Vec4i> pts, vector<Point> &prevface, int &succ, bool detected);
+void FindCubeFace1(vector<Vec4i> pts, vector<Point> &prevface, int &succ, int &detected, int &tracking,
+	Point &v1, Point &v2, Point &p0, vector<Point2f> &features, vector<Point> &pt);
+
+int compfaces(vector<Point> f1, vector<Point> f2);

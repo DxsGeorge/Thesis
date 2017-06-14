@@ -496,10 +496,12 @@ float AngletoX(Vec4i pt)
 	return ang;
 }
 
-vector<Point> FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, bool detected)
+void FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, int &detected, int &tracking,
+							Point &v1, Point &v2, Point &p0, vector<Point2f> &features, vector<Point> &pt)
 {
+	//find cube corners based on paper 
 	vector <LinePair> lp;
-	vector <Point> edges, test, minps, pt;
+	vector <Point> edges, test, minps;
 	float qwe = 0.06;
 	int minch = 10000;
 	for (size_t i = 0; i < lines.size(); i++)
@@ -584,6 +586,8 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &
 			}
 		}
 	}
+
+	//check how many lines align to a grid
 	for (size_t i = 0; i < lp.size(); i++)
 	{
 		Point same, end1, end2;
@@ -647,6 +651,8 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &
 		}
 	}
 	std::sort(lp.begin(), lp.end(), [](LinePair a, LinePair b){ return (a.evidence>b.evidence); });
+
+	//check for same grid at least 3 times
 	for (size_t i = 0; i < lp.size(); ++i)
 	{
 
@@ -656,8 +662,8 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &
 			Point p3(end2.x + end1.x - same.x, end2.y + end1.y - same.y);
 			test = { same, end1, end2, p3 };
 			p3 = Point(prevface[2].x + prevface[1].x - prevface[0].x, prevface[2].y + prevface[1].y - prevface[0].y);
-			vector<Point> tc{ prevface[0], prevface[1], prevface[2] };
-			float ch = compfaces(test, tc);
+			vector<Point> tc{ prevface[0], prevface[1], prevface[2], p3 };
+			int ch = compfaces(test, tc);
 			if (ch < minch)
 			{
 				minch = ch;
@@ -672,7 +678,7 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &
 		{
 			succ += 1;
 			pt = prevface;
-			detected = true;
+			detected = 1;
 		}		 
 	}
 	else
@@ -681,26 +687,40 @@ vector<Point> FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &
 	}
 	if (succ > 2)
 	{
-		pt.empty();
 		pt = {};
+		for (int i = 1; i < 3; ++i)
+		{
+			for (int j = 1; j < 3; ++j)
+			{
+				pt.push_back(Point(p0.x + float(i) / 3 * v1.x + float(j) / 3 * v2.x, p0.y + float(i) / 3 * v1.y + float(j) / 3 * v2.y));
+			}
+		}
+		features = {};
+		for (size_t i = 0; i < pt.size(); ++i)
+		{
+			features.push_back( Point2f(pt[i].x,pt[i].y));
+		}		
+		tracking = 1;
+		succ = 0;
 	}
 	
 }
 
-float compfaces(vector<Point> f1, vector<Point> f2)
+int compfaces(vector<Point> f1, vector<Point> f2)
 {
 	int totd = 0;
-	for (size_t i = 0; i < f1.size(); ++i)
+	for (int i = 0; i < f1.size(); ++i)
 	{
 		int mind = 10000;
-		for (size_t j = 0; j < f2.size(); ++j)
+		for (int j = 0; j < f2.size(); ++j)
 		{
 			float d = Distance(f1[i], f2[j]);
 			if (d < mind) mind = d;
 		}
 		totd += mind;
 	}
-	return totd / 4;
+	
+	return (totd / 4);
 }
 
 

@@ -34,17 +34,21 @@ int main()
 	char *filename = "http://192.168.1.5:8080/video?.mjpeg";
 	cap.open(1);
 	int tracking_mode = 2;
+	int undetectednum = 100;
 	bool of;
 	Mat prev_dst;
 	Mat dst;
 	Mat gray, prev_gray;
-	vector<Point> points;
+	vector<Point> points, pt, lastpt;
 	vector<KeyPoint> keypoints;
 	vector<Point2f> pointsf, pointsf_next;
 	int shown_face_count = 0;
 	int thr = 100;
 	int succ = 0;
-	bool detected = false;
+	int detected = 0;
+	int tracking = 0;
+	int count = 0;
+	Point v1(0, 0), v2(0, 0), p0(0, 0);
 	vector<Point> prevface{ Point(0, 0), Point(5, 0), Point(0, 5) };
 	while (true)
 	{
@@ -117,29 +121,74 @@ int main()
 			}
 			else if (tracking_mode == 2)
 			{
-				vector<Vec4i> lines;
-				vector<Point> edges;
-				HoughLinesP(dst, lines, 1, CV_PI / 45, thr, 10, 5);
-				for (size_t i = 0; i < lines.size(); i++)
+				if (tracking > 0)
 				{
-					line(src, Point(lines[i][0], lines[i][1]), Point(lines[i][2], lines[i][3]), Scalar(0, 0, 255), 1);
+					//do lk trakcing
+					detected = 2;
+					TermCriteria termcrit(TermCriteria::COUNT | TermCriteria::EPS, 20, 0.3);
+					Size subPixWinSize(10, 10), winSize(5, 5);
+					vector<uchar> status;
+					Mat err;
+					calcOpticalFlowPyrLK(prev_gray, gray, pointsf, pointsf_next, status, err, winSize);
+					for (size_t i = 0; i < pointsf.size(); ++i)
+					{
+						circle(src, pointsf[i], 2, Scalar(0, 255, 0), 1);
+					}
+					pointsf = pointsf_next;
 				}
-				if (lines.size() < 50) thr=max(thr-1,2);
-				else thr++;
-				cout << "lines: "<< lines.size()<<"threshold: " <<thr<<endl;
-				edges=FindCubeFace1(lines,prevface,succ, detected);
-				for (size_t i = 0;edges.size()>3 && i < 4; ++i)
+				if (tracking == 0)
 				{
-					circle(src, edges[i], 2, Scalar(255, 255, 255), 2);
+					//find cube face
+					vector<Vec4i> lines;
+					vector<Point> edges;
+					HoughLinesP(dst, lines, 1, CV_PI / 45, thr, 10, 5);
+					for (size_t i = 0; i < lines.size(); i++)
+					{
+						line(src, Point(lines[i][0], lines[i][1]), Point(lines[i][2], lines[i][3]), Scalar(0, 0, 255), 1);
+					}
+					if (lines.size() < 50) thr = max(thr - 1, 2);
+					else thr++;
+					//cout << "lines: " << lines.size() << "threshold: " << thr << endl;
+					FindCubeFace1(lines, prevface, succ, detected, tracking, v1, v2, p0, pointsf, pt);
+
+				}
+				else
+				{
+					//tracking mode 
+					Point p(pointsf[0]), p1(pointsf[1]), p2(pointsf[2]);
+					v1 = Point(p1.x - p.x, p1.y - p.y);
+					v2 = Point(p2.x - p.x, p2.y - p.y);
+					pt = { Point(p.x - v1.x - v2.x, p.y - v1.y - v2.y),
+						Point(p.x + 2 * v2.x - v1.x, p.y + 2 * v2.y - v1.y),
+						Point(p.x + 2 * v1.x - v2.x, p.y + 2 * v1.y - v2.y) };
+					prevface = { pt[0], pt[1], pt[2] };
+				}
+				if (detected > 0 || undetectednum < 1) 
+				{
+					if (detected <= 0)
+					{
+						undetectednum++;
+						pt = lastpt;
+					}
+					else
+					{
+						undetectednum = 0;
+						lastpt = pt;
+					}
+					Point p3(pt[2].x + pt[1].x - pt[0].x, pt[2].y + pt[1].y - pt[0].y);
+					line(src, pt[0], pt[1], Scalar(0, 255, 0), 2);
+					line(src, pt[1], p3, Scalar(0, 255, 0), 2);
+					line(src, p3, pt[2], Scalar(0, 255, 0), 2);
+					line(src, pt[2], pt[0], Scalar(0, 255, 0), 2);
 				}
 
 			}
-			
 			imshow("Video", src);
 			imshow("Blob", dst);
 			imshow("Gray",gray);
 			prev_dst = dst;
 			prev_gray = gray;
+			count++;
 		}
 		
 

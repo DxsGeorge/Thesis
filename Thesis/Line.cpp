@@ -146,6 +146,26 @@ Point LinePair::getsame()
 	return this->same;
 }
 
+AnglePoint::AnglePoint()
+{
+
+}
+
+AnglePoint::AnglePoint(float angle, Point point)
+{
+	this->angle = angle;
+	this->point = point;
+}
+
+float AnglePoint::getAngle()
+{
+	return this->angle;
+}
+
+Point AnglePoint::getPoint()
+{
+	return this->point;
+}
 
 bool SamePoint (Point p1, Point p2, int offset) 
 {

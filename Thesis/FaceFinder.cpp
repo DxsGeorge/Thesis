@@ -496,8 +496,8 @@ float AngletoX(Vec4i pt)
 	return ang;
 }
 
-void FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, int &detected, int &tracking,
-							Point &v1, Point &v2, Point &p0, vector<Point2f> &features, vector<Point> &pt)
+void FindCubeFace1(vector<Vec4i> lines, vector<Point> &prevface, int &succ, int &detected, int &tracking,
+	Point &v1, Point &v2, Point &p0, vector<Point2f> &features, vector<Point> &pt)
 {
 	//find cube corners based on paper 
 	vector <LinePair> lp;
@@ -508,7 +508,7 @@ void FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, int
 	{
 		for (size_t j = i + 1; j < lines.size(); j++)
 		{
-			int matched=0;
+			int matched = 0;
 			LinePair hypothesis;
 			Point p1, p2, p3, p4;
 			float dd1, dd2;
@@ -542,9 +542,9 @@ void FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, int
 			if (matched == 0)
 			{
 				//check intersection at 1/3 or 2/3
-				Point pt,temp,same,end1,end2;
+				Point pt, temp, same, end1, end2;
 				float ua, ub;
-				if (FindIntersection(lines[i], lines[j],ua, ub, pt))
+				if (FindIntersection(lines[i], lines[j], ua, ub, pt))
 				{
 					int ok1 = 0, ok2 = 0;
 					if (abs(ua - 1.0 / 3) < 0.05) ok1 = 1;
@@ -555,10 +555,10 @@ void FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, int
 					{
 						if (ok1 == 2)
 						{
-							temp =p1;
+							temp = p1;
 							p1 = p2;
 							p2 = temp;
-							
+
 						}
 						if (ok2 == 2)
 						{
@@ -606,9 +606,9 @@ void FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, int
 		int evidence = 0;
 		int totallines = 0;
 		Eigen::Matrix3f A, Ainv;
-		A <<	end2.x - same.x, end1.x - same.x, same.x,
-				end2.y - same.y, end1.y - same.y, same.y,
-				0              , 0              , 1;
+		A << end2.x - same.x, end1.x - same.x, same.x,
+			end2.y - same.y, end1.y - same.y, same.y,
+			0, 0, 1;
 		Ainv = A.inverse();
 		for (size_t j = 0; j < lines.size(); j++)
 		{
@@ -618,25 +618,25 @@ void FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, int
 			a2 = abs(abs(ang - ang2) - CV_PI / 2);
 			if (a1 > 0.1 && a2 > 0.1) continue;
 			Point q1, q2;
-			q1 = Point(lines[j][0],lines[j][1]); q2 = Point(lines[j][2],lines[j][3]);
+			q1 = Point(lines[j][0], lines[j][1]); q2 = Point(lines[j][2], lines[j][3]);
 			Eigen::Matrix<float, 3, 1> v;
-			v <<	q1.y, 
-					q1.x, 
-					1;
+			v << q1.y,
+				q1.x,
+				1;
 			Eigen::Matrix<float, 3, 1> vp1 = Ainv*v;
 			if (vp1(0, 0) > 1.1 || vp1(0, 0)<-0.1) continue;
 			if (vp1(1, 0) > 1.1 || vp1(1, 0)<-0.1) continue;
-			if ((abs(vp1(0, 0) - 1 / 3.0) > qwe )
-				&& 
-				(abs(vp1(0, 0) - 2 / 3.0) > qwe )
+			if ((abs(vp1(0, 0) - 1 / 3.0) > qwe)
 				&&
-				(abs(vp1(1, 0) - 1 / 3.0) > qwe )
-				&& 
-				(abs(vp1(1, 0) - 2 / 3.0) > qwe )) continue;
-			Eigen::Matrix<float , 3, 1> v2;
-			v2 <<	q2.y,
-					q2.x,
-					1;
+				(abs(vp1(0, 0) - 2 / 3.0) > qwe)
+				&&
+				(abs(vp1(1, 0) - 1 / 3.0) > qwe)
+				&&
+				(abs(vp1(1, 0) - 2 / 3.0) > qwe)) continue;
+			Eigen::Matrix<float, 3, 1> v2;
+			v2 << q2.y,
+				q2.x,
+				1;
 			Eigen::Matrix<float, 3, 1> vp2 = Ainv*v2;
 			if (vp2(0, 0) > 1.1 || vp2(0, 0)<-0.1) continue;
 			if (vp2(1, 0) > 1.1 || vp2(1, 0)<-0.1) continue;
@@ -650,60 +650,61 @@ void FindCubeFace1(vector<Vec4i> lines , vector<Point> &prevface, int &succ, int
 			lp[i].evidence++;
 		}
 	}
-	std::sort(lp.begin(), lp.end(), [](LinePair a, LinePair b){ return (a.evidence>b.evidence); });
-
-	//check for same grid at least 3 times
-	for (size_t i = 0; i < lp.size(); ++i)
+	std::sort(lp.begin(), lp.end(), [](LinePair a, LinePair b){ return (a.evidence > b.evidence); });
+	if (lp.size() > 0)
 	{
-
-		if (lp[i].evidence > 0.05*lines.size())
+		//check for same grid at least 3 times
+		for (size_t i = 0; i < lp.size(); ++i)
 		{
-			Point same(lp[i].getsame()), end1(lp[i].getend1()), end2(lp[i].getend2());
-			Point p3(end2.x + end1.x - same.x, end2.y + end1.y - same.y);
-			test = { same, end1, end2, p3 };
-			p3 = Point(prevface[2].x + prevface[1].x - prevface[0].x, prevface[2].y + prevface[1].y - prevface[0].y);
-			vector<Point> tc{ prevface[0], prevface[1], prevface[2], p3 };
-			int ch = compfaces(test, tc);
-			if (ch < minch)
+
+			if (lp[i].evidence > 0.05*lines.size())
 			{
-				minch = ch;
-				minps = { same, end1, end2 };
+				Point same(lp[i].getsame()), end1(lp[i].getend1()), end2(lp[i].getend2());
+				Point p3(end2.x + end1.x - same.x, end2.y + end1.y - same.y);
+				test = { same, end1, end2, p3 };
+				p3 = Point(prevface[2].x + prevface[1].x - prevface[0].x, prevface[2].y + prevface[1].y - prevface[0].y);
+				vector<Point> tc{ prevface[0], prevface[1], prevface[2], p3 };
+				int ch = compfaces(test, tc);
+				if (ch < minch)
+				{
+					minch = ch;
+					minps = { same, end1, end2 };
+				}
 			}
 		}
-	}
-	if (minps.size() > 0)
-	{
-		prevface = minps;
-		if (minch < 10)
+		if (minps.size() > 0)
 		{
-			succ += 1;
-			pt = prevface;
-			detected = 1;
-		}		 
-	}
-	else
-	{
-		succ = 0;	
-	}
-	if (succ > 2)
-	{
-		pt = {};
-		for (int i = 1; i < 3; ++i)
-		{
-			for (int j = 1; j < 3; ++j)
+			prevface = minps;
+			if (minch < 10)
 			{
-				pt.push_back(Point(p0.x + float(i) / 3 * v1.x + float(j) / 3 * v2.x, p0.y + float(i) / 3 * v1.y + float(j) / 3 * v2.y));
+				succ += 1;
+				pt = prevface;
+				detected = 1;
 			}
 		}
-		features = {};
-		for (size_t i = 0; i < pt.size(); ++i)
+		else
 		{
-			features.push_back( Point2f(pt[i].x,pt[i].y));
-		}		
-		tracking = 1;
-		succ = 0;
+			succ = 0;
+		}
+		if (succ > 2)
+		{
+			pt = {};
+			for (int i = 1; i < 3; ++i)
+			{
+				for (int j = 1; j < 3; ++j)
+				{
+					pt.push_back(Point(p0.x + float(i) / 3 * v1.x + float(j) / 3 * v2.x, p0.y + float(i) / 3 * v1.y + float(j) / 3 * v2.y));
+				}
+			}
+			features = {};
+			for (size_t i = 0; i < pt.size(); ++i)
+			{
+				features.push_back(Point2f(pt[i].x, pt[i].y));
+			}
+			tracking = 1;
+			succ = 0;
+		}
 	}
-	
 }
 
 int compfaces(vector<Point> f1, vector<Point> f2)
@@ -721,6 +722,24 @@ int compfaces(vector<Point> f1, vector<Point> f2)
 	}
 	
 	return (totd / 4);
+}
+
+vector<Point> winded(Point p1, Point p2, Point p3, Point p4)
+{
+	vector<AnglePoint> ps;
+	vector<Point> ps1;
+	Point2f avg = (0.25*(p1.x + p2.x + p3.x + p4.x), 0.25*(p1.y + p2.y + p3.y + p4.y));
+	AnglePoint ts1(atan2(p1.y - avg.y, p1.x - avg.x), p1);
+	AnglePoint ts2(atan2(p2.y - avg.y, p2.x - avg.x), p2);
+	AnglePoint ts3(atan2(p3.y - avg.y, p3.x - avg.x), p3);
+	AnglePoint ts4(atan2(p4.y - avg.y, p4.x - avg.x), p4);
+	ps = {ts1, ts2, ts3, ts4};
+	std::sort(ps.begin(), ps.end(), [](AnglePoint a, AnglePoint b){ return (a.getAngle() > b.getAngle()); });
+	for (size_t i = 0; i < ps.size(); i++)
+	{
+		ps1.push_back(ps[i].getPoint());
+	}
+	return ps1;
 }
 
 

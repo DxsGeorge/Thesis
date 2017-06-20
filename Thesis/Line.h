@@ -45,6 +45,18 @@ class LinePair
 
 };
 
+class AnglePoint
+{
+private:
+	float angle;
+	Point point;
+public:
+	AnglePoint(float angle, Point point);
+	AnglePoint();
+	float getAngle();
+	Point getPoint();
+};
+
 
 float absDifference(Point p1, Point p2);
 

@@ -54,3 +54,5 @@ void FindCubeFace1(vector<Vec4i> pts, vector<Point> &prevface, int &succ, int &d
 	Point &v1, Point &v2, Point &p0, vector<Point2f> &features, vector<Point> &pt);
 
 int compfaces(vector<Point> f1, vector<Point> f2);
+
+vector<Point> winded(Point p1, Point p2, Point p3, Point p4);

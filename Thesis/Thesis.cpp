@@ -132,9 +132,22 @@ int main()
 					calcOpticalFlowPyrLK(prev_gray, gray, pointsf, pointsf_next, status, err, winSize);
 					for (size_t i = 0; i < pointsf.size(); ++i)
 					{
-						circle(src, pointsf[i], 2, Scalar(0, 255, 0), 1);
+						circle(src, pointsf_next[i], 2, Scalar(0, 255, 0), 1);
 					}
 					pointsf = pointsf_next;
+					for (size_t i = 0; i < status.size(); ++i)
+					{
+						if (status[i] == 0) tracking = 0;
+					}
+					float ds1 = Distance(pointsf_next[0], pointsf_next[1]);
+					float ds2 = Distance(pointsf_next[2], pointsf_next[3]);
+					if (max(ds1, ds2) / min(ds1, ds2)>1.4) tracking = 0;
+					float ds3 = Distance(pointsf_next[0], pointsf_next[2]);
+					float ds4 = Distance(pointsf_next[1], pointsf_next[3]);
+					if (max(ds3, ds4) / min(ds3, ds4) > 1.4) tracking = 0;
+					if (ds1 < 10 || ds2 < 10 || ds3 < 10 || ds4 < 10) tracking = 0;
+					if (tracking == 0) detected = 0;
+					
 				}
 				if (tracking == 0)
 				{
@@ -176,6 +189,15 @@ int main()
 						lastpt = pt;
 					}
 					Point p3(pt[2].x + pt[1].x - pt[0].x, pt[2].y + pt[1].y - pt[0].y);
+
+					pt = winded(pt[0], pt[1], pt[2], p3);
+
+
+					v1 = Point(pt[1].x - pt[0].x, pt[1].y - pt[0].y);
+					v2 = Point(pt[3].x - pt[0].x, pt[3].y - pt[0].y);
+					p0 = Point(pt[0].x, pt[0].y);
+
+					
 					line(src, pt[0], pt[1], Scalar(0, 255, 0), 2);
 					line(src, pt[1], p3, Scalar(0, 255, 0), 2);
 					line(src, p3, pt[2], Scalar(0, 255, 0), 2);

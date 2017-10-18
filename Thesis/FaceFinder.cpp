@@ -381,6 +381,16 @@ string ColorMatcherHLS(Vec3b values)
 	else if (values.val[0]<240) return "blue";
 }
 
+Scalar ColorHSV(Vec3b values)
+{
+	if (values.val[2]>95) return Scalar(255,255,255); //white
+	if (values.val[0]<5 || values.val[0]>355) return Scalar(0,0,255); //red
+	else if (values.val[0]<39) return Scalar(0,105,255); //orange
+	else if (values.val[0]<60) return Scalar(0,252,215); //yellow
+	else if (values.val[0]<120) return Scalar(0,255,0); //green
+	else if (values.val[0]<240) return Scalar(255,0,0); //blue
+}
+
 string ColorMatcherMulti(Vec3b values, Vec3b values1)
 {
 	int maxrgb = max(max(values1.val[0], values.val[1]), values.val[2]);
@@ -742,4 +752,15 @@ vector<Point> winded(Point p1, Point p2, Point p3, Point p4)
 	return ps1;
 }
 
+Mat FindCubeOrientation(vector<Point2f> points, Mat cam, Mat dist)
+{
+	vector<Point3f> obj;
+	Mat rvec, tvec, cam, dist;
+	obj.push_back(Point3f(0.0, 0.0, 0.0));
+	obj.push_back(Point3f(0.0, 1.0, 0.0));
+	obj.push_back(Point3f(1.0, 1.0, 0.0));
+	obj.push_back(Point3f(1.0, 0.0, 0.0));
+	bool success = solvePnP(obj, points, cam, dist, rvec, tvec);
+	return rvec;
+}
 

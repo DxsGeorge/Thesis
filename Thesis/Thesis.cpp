@@ -39,6 +39,7 @@ int main()
 	Mat prev_dst;
 	Mat dst;
 	Mat gray, prev_gray;
+	Mat hsv;
 	vector<Point> points, pt, lastpt;
 	vector<KeyPoint> keypoints;
 	vector<Point2f> pointsf, pointsf_next;
@@ -48,6 +49,8 @@ int main()
 	int detected = 0;
 	int tracking = 0;
 	int count = 0;
+	bool colorextract = false;
+	Mat rvec, cam, dist;
 	Point v1(0, 0), v2(0, 0), p0(0, 0);
 	vector<Point> prevface{ Point(0, 0), Point(5, 0), Point(0, 5) };
 	while (true)
@@ -63,6 +66,7 @@ int main()
 			pyrDown(gray, gray,Size(src.cols / 2, src.rows / 2));
 			flip(gray, gray, 1);
 			dst = FilterImage(src);
+			cvtColor(src, hsv, CV_BGR2HSV);
 			if (tracking_mode == 0)
 			{
 
@@ -125,6 +129,7 @@ int main()
 				{
 					//do lk trakcing
 					detected = 2;
+					colorextract = true;
 					TermCriteria termcrit(TermCriteria::COUNT | TermCriteria::EPS, 20, 0.3);
 					Size subPixWinSize(10, 10), winSize(5, 5);
 					vector<uchar> status;
@@ -139,6 +144,8 @@ int main()
 					{
 						if (status[i] == 0) tracking = 0;
 					}
+					rvec = FindCubeOrientation(pointsf_next, cam, dist);
+
 					float ds1 = Distance(pointsf_next[0], pointsf_next[1]);
 					float ds2 = Distance(pointsf_next[2], pointsf_next[3]);
 					if (max(ds1, ds2) / min(ds1, ds2)>1.4) tracking = 0;
@@ -146,7 +153,11 @@ int main()
 					float ds4 = Distance(pointsf_next[1], pointsf_next[3]);
 					if (max(ds3, ds4) / min(ds3, ds4) > 1.4) tracking = 0;
 					if (ds1 < 10 || ds2 < 10 || ds3 < 10 || ds4 < 10) tracking = 0;
-					if (tracking == 0) detected = 0;
+					if (tracking == 0)
+					{
+						detected = 0;
+						colorextract = false;
+					}
 					
 				}
 				if (tracking == 0)
@@ -190,18 +201,47 @@ int main()
 					}
 					Point p3(pt[2].x + pt[1].x - pt[0].x, pt[2].y + pt[1].y - pt[0].y);
 
-					pt = winded(pt[0], pt[1], pt[2], p3);
+					line(src, pt[0], pt[1], Scalar(0, 255, 0), 2);
+					line(src, pt[1], p3, Scalar(0, 255, 0), 2);
+					line(src, p3, pt[2], Scalar(0, 255, 0), 2);
+					line(src, pt[2], pt[0], Scalar(0, 255, 0), 2);
 
+					pt = winded(pt[0], pt[1], pt[2], p3);
 
 					v1 = Point(pt[1].x - pt[0].x, pt[1].y - pt[0].y);
 					v2 = Point(pt[3].x - pt[0].x, pt[3].y - pt[0].y);
 					p0 = Point(pt[0].x, pt[0].y);
 
+					vector<Point2f> ep;
+					int i = 1;
+					int j = 5;
+
+					if (colorextract)
+					{
+						//cube is tracked
+						for (size_t k = 0; k < 9; ++k)
+						{
+							ep.push_back(Point2f((p0.x + i*v1.x / 6.0 + j*v2.x / 6.0), (p0.y + i*v1.y / 6.0 + j*v2.y / 6.0)));
+							i += 2;
+							if (i == 7)
+							{
+								i = 1;
+								j -= 2;
+							}
+						}
+						float rad = Distance(v1, Point(0, 0)) / 6.0;
+						for (size_t i = 0; i < ep.size(); ++i)
+						{
+							if (ep[i].x>rad && ep[i].x < src.cols / 2 - rad && ep[i].y>rad && ep[i].y < src.rows - rad)
+							{
+								Vec3b color = hsv.at<Vec3b>(ep[i]);
+								Scalar col = ColorHSV(color);
+								//circle(src, ep[i], rad, col, -1);
+								
+							}
+						}
+					}
 					
-					line(src, pt[0], pt[1], Scalar(0, 255, 0), 2);
-					line(src, pt[1], p3, Scalar(0, 255, 0), 2);
-					line(src, p3, pt[2], Scalar(0, 255, 0), 2);
-					line(src, pt[2], pt[0], Scalar(0, 255, 0), 2);
 				}
 
 			}

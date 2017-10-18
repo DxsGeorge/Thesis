@@ -7,6 +7,7 @@
 #include <Eigen/Dense>
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/calib3d/calib3d.hpp>
 #include <map>
 #include <math.h>
 #include <cmath>
@@ -38,6 +39,8 @@ string ColorMatcherHSV(Vec3b values);
 
 string ColorMatcherHLS(Vec3b values);
 
+Scalar ColorHSV(Vec3b values);
+
 string ColorMatcherMulti(Vec3b values, Vec3b values1);
 
 float middle(float x , float y, float z);
@@ -56,3 +59,5 @@ void FindCubeFace1(vector<Vec4i> pts, vector<Point> &prevface, int &succ, int &d
 int compfaces(vector<Point> f1, vector<Point> f2);
 
 vector<Point> winded(Point p1, Point p2, Point p3, Point p4);
+
+Mat FindCubeOrientation(vector<Point2f> points, Mat cam, Mat dist);

@@ -60,4 +60,4 @@ int compfaces(vector<Point> f1, vector<Point> f2);
 
 vector<Point> winded(Point p1, Point p2, Point p3, Point p4);
 
-Mat FindCubeOrientation(vector<Point2f> points, Mat cam, Mat dist);
+Mat FindCubeOrientation(vector<Point2f> points, Mat cam, Mat dist, Mat &tvec);

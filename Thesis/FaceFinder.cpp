@@ -752,15 +752,16 @@ vector<Point> winded(Point p1, Point p2, Point p3, Point p4)
 	return ps1;
 }
 
-Mat FindCubeOrientation(vector<Point2f> points, Mat cam, Mat dist)
+Mat FindCubeOrientation(vector<Point2f> points, Mat cam, Mat dist, Mat &tvec)
 {
 	vector<Point3f> obj;
-	Mat rvec, tvec, cam, dist;
+	Mat rvec, rvecR;
 	obj.push_back(Point3f(0.0, 0.0, 0.0));
+	obj.push_back(Point3f(1.0, 0.0, 0.0));
 	obj.push_back(Point3f(0.0, 1.0, 0.0));
 	obj.push_back(Point3f(1.0, 1.0, 0.0));
-	obj.push_back(Point3f(1.0, 0.0, 0.0));
-	bool success = solvePnP(obj, points, cam, dist, rvec, tvec);
+	bool success = solvePnP(obj, points, cam, dist, rvec, tvec, false, CV_ITERATIVE);
+	Rodrigues(rvec, rvecR);
 	return rvec;
 }
 

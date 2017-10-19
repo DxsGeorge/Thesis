@@ -37,7 +37,7 @@ int main()
 	int undetectednum = 100;
 	bool of;
 	Mat prev_dst;
-	Mat dst;
+	Mat dst,sr1;
 	Mat gray, prev_gray;
 	Mat hsv;
 	vector<Point> points, pt, lastpt;
@@ -50,9 +50,21 @@ int main()
 	int tracking = 0;
 	int count = 0;
 	bool colorextract = false;
-	Mat rvec, cam, dist;
+	Mat rvec, tvec;
+	vector<Point3f> normal; 
+	normal.push_back(Point3f(.0, .0, .0));
+	normal.push_back(Point3f(1.0, .0, .0));
+	normal.push_back(Point3f(.0, .0, .0));
+	normal.push_back(Point3f(.0, 1.0, .0));
+	normal.push_back(Point3f(.0, .0, .0));
+	normal.push_back(Point3f(.0, .0, 1.0));
+	Mat cam = Mat(3, 3, CV_64F);
+	cam = (Mat_<float>(3, 3) << 747.468709, 0.000000, 304.749530, 0.000000, 744.363317, 275.458171, 0.000000, 0.000000, 1.000000);
+	Mat dist = Mat(5, 1, CV_64F);
+	dist = (Mat_<float>(5, 1) << -0.020035, -0.311615, 0.004544, -0.005086, 0.000000);
 	Point v1(0, 0), v2(0, 0), p0(0, 0);
 	vector<Point> prevface{ Point(0, 0), Point(5, 0), Point(0, 5) };
+	int stat = 0;
 	while (true)
 	{
 
@@ -61,9 +73,8 @@ int main()
 		//src += Scalar(50, 50, 50);
 		if (!src.empty())
 		{
-			
 			cvtColor(src, gray, CV_BGR2GRAY);
-			pyrDown(gray, gray,Size(src.cols / 2, src.rows / 2));
+			pyrDown(gray, gray, Size(src.cols / 2, src.rows / 2));
 			flip(gray, gray, 1);
 			dst = FilterImage(src);
 			cvtColor(src, hsv, CV_BGR2HSV);
@@ -139,13 +150,37 @@ int main()
 					{
 						circle(src, pointsf_next[i], 2, Scalar(0, 255, 0), 1);
 					}
+					circle(src, pointsf_next[0], 2, Scalar(255, 0, 0), 1);
+					circle(src, pointsf_next[1], 2, Scalar(0, 255, 0), 1);
+					circle(src, pointsf_next[2], 2, Scalar(0, 0, 255), 1);
+					circle(src, pointsf_next[3], 2, Scalar(255, 255, 255), 1);
 					pointsf = pointsf_next;
+
+					//check outliers from lk tracing
 					for (size_t i = 0; i < status.size(); ++i)
 					{
-						if (status[i] == 0) tracking = 0;
+						if (status[i] == 0) stat++;
 					}
-					rvec = FindCubeOrientation(pointsf_next, cam, dist);
+					if (stat == 3)
+					{
+						tracking = 0;
+						stat = 0;
+					}
+					for (size_t i = 0; i < pointsf_next.size(); ++i)
+					{
+						if (pointsf_next[i].x > src.cols/2 || pointsf_next[i].y > src.rows/2) tracking = 0;
+					}
+					//Find cube pose in 3D
+					rvec = FindCubeOrientation(pointsf_next, cam, dist, tvec);
+					vector<Point2f> impts;
+					projectPoints(normal, rvec, tvec, cam, dist, impts);
+					//cout << "imgpts: " << impts << endl;
+					line(src, impts[0], impts[1], Scalar(0, 0, 255), 1);
+					line(src, impts[2], impts[3], Scalar(255, 0, 255), 1);
+					line(src, impts[4], impts[5], Scalar(0, 255, 255), 1);
 
+					//Check if lost
+#if 0
 					float ds1 = Distance(pointsf_next[0], pointsf_next[1]);
 					float ds2 = Distance(pointsf_next[2], pointsf_next[3]);
 					if (max(ds1, ds2) / min(ds1, ds2)>1.4) tracking = 0;
@@ -158,7 +193,7 @@ int main()
 						detected = 0;
 						colorextract = false;
 					}
-					
+#endif					
 				}
 				if (tracking == 0)
 				{

@@ -857,8 +857,46 @@ Cube ProcessColors(vector<SimpleFace> faces)
 	opposite[3] = 1;
 	opposite[4] = 5;
 	opposite[5] = 4;
-
-
+	int range[6] = { 0, 1, 2, 3, 4, 5 };
+	int assigned[9][6] = {};
+	for (int i = 0; i < 9; ++i)
+	{
+		for (int j = 0; j < 6; ++j)
+		{
+			assigned[i][j] = -1;
+			if (j == 4) assigned[i][j] = i;
+		}
+	}
+	map<tuple<int, int>, int[]> poss;
+	for (int i = 0; i < 9; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			tuple<int, int> a;
+			tie(j, i) = a;
+			poss.insert(pair<tuple<int,int>,int[]>(a, range));
+		}
+	}
+	while (done < 48)
+	{
+		bestd = 10000;
+		bool forced = false;
+		for (int i = 0; i < 9; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				if (i != 4 && assigned[i][j] == -1 && (!forced))
+				{
+					int considered = 0;
+					for (int k = 0; k < 6; ++k)
+					{
+						//todo this
+					}
+					
+				}
+			}
+		}
+	}
 	Cube cube(correctedfaces);
 	return cube;
 }

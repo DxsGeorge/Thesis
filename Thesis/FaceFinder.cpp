@@ -374,18 +374,18 @@ string ColorMatcherHSV(Vec3b values)
 string ColorMatcherHLS(Vec3b values)
 {
 	if (values.val[2]>95) return "white";
-	if (values.val[0]<5 || values.val[0]>355) return "red";
-	else if (values.val[0]<39) return "orange";
-	else if (values.val[0]<60) return "yellow";
-	else if (values.val[0]<120) return "green";
-	else if (values.val[0]<240) return "blue";
+	if (values.val[0]<10 || values.val[0]>150) return "red";
+	else if (values.val[0]<15) return "orange";
+	else if (values.val[0]<45) return "yellow";
+	else if (values.val[0]<100) return "green";
+	else if (values.val[0]<150) return "blue";
 }
 
 Scalar ColorHSV(Vec3b values)
 {
-	if (values.val[2]>95) return Scalar(255,255,255); //white
-	if (values.val[0]<5 || values.val[0]>355) return Scalar(0,0,255); //red
-	else if (values.val[0]<39) return Scalar(0,105,255); //orange
+	//if (values.val[2]>95) return Scalar(255,255,255); //white
+	if (values.val[0]<18 || values.val[0]>355) return Scalar(0,0,255); //red
+	else if (values.val[0]<30) return Scalar(0,105,255); //orange
 	else if (values.val[0]<60) return Scalar(0,252,215); //yellow
 	else if (values.val[0]<120) return Scalar(0,255,0); //green
 	else if (values.val[0]<240) return Scalar(255,0,0); //blue
@@ -765,3 +765,100 @@ Mat FindCubeOrientation(vector<Point2f> points, Mat cam, Mat dist, Mat &tvec)
 	return rvec;
 }
 
+int ColMatcher(vector<int> st_color, vector<vector<int>> colors)
+{
+	int face = -1;
+	float RMSE= 100;
+	for (size_t i = 0; i < colors.size(); ++i)
+	{
+		int tp1 = abs(colors[i][0] - st_color[0]);
+		int tp2 = abs(colors[i][1] - st_color[1]);
+		int tp3 = abs(colors[i][2] - st_color[2]);
+		float tpRMSE = sqrt(float(pow((tp1 + tp2 + tp3), 2)) / 3.0);
+		if (RMSE > tpRMSE) face = i;
+	}
+	return face;
+}
+
+float ScalarCompare(Scalar a, Scalar b)
+{
+	float asq = a[0]+a[1]+a[2];
+	float bsq = b[0]+b[1]+b[2];
+	return abs(asq - bsq)/3;
+}
+
+float ScalarCompareYUV(Scalar a, Scalar b)
+{
+	float asq = a[1] + a[2];
+	float bsq = b[1] + b[2];
+	return abs(asq - bsq) / 2;
+}
+
+float FaceCompare(SimpleFace a, SimpleFace b)
+{
+	float sum = 0;
+	int count = 0;
+	vector<Scalar> a_vec, b_vec;
+	a_vec = a.getColors();
+	b_vec = b.getColors();
+	for (size_t i = 0; i < 9; ++i)
+	{
+		sum += ScalarCompare(a_vec[i], b_vec[i]);
+		count++;
+	}
+	std::cout << sum / count << std::endl;
+	return sum / count;
+}
+
+float FaceCompareYUV(SimpleFace a, SimpleFace b)
+{
+	float sum = 0;
+	vector<Scalar> a_vec, b_vec;
+	a_vec = a.getColors();
+	b_vec = b.getColors();
+	for (size_t i = 0; i < 9; ++i)
+	{
+		sum += ScalarCompareYUV(a_vec[i], b_vec[i]);
+	}
+	std::cout << sum / 9 << std::endl;
+	return sum / 9;
+}
+
+float CompareOnlyH(Scalar a, Scalar b)
+{
+	float res = abs(a[0] - b[0]);
+	return res;
+}
+
+int MatchToCenter(vector<Scalar> centers, Scalar color)
+{
+	int min = 180;
+	for (size_t i = 0; i<centers.size(); ++i)
+	{
+		if (ScalarCompare(centers[i], color) < min) min = i;
+	}
+	return min;
+}
+
+Cube ProcessColors(vector<SimpleFace> faces)
+{
+	vector<SimpleFace> correctedfaces;
+	int bestj = 0;
+	int besti = 0;
+	int bestcon = 0;
+	int matchesto = 0;
+	int bestd = 10001;
+	int done = 0;
+	int taken[6] = { 0, 0, 0, 0, 0, 0 };
+	map<int, int> opposite;
+	opposite[0] = 2;
+	opposite[1] = 3;
+	opposite[2] = 0;
+	opposite[3] = 1;
+	opposite[4] = 5;
+	opposite[5] = 4;
+
+
+	Cube cube(correctedfaces);
+	return cube;
+}

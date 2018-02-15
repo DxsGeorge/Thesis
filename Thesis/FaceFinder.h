@@ -2,7 +2,7 @@
 
 #include "Line.h"
 #include "MyHash.h"
-#include "Line.h"
+#include "Sticker.h"
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <opencv2/highgui/highgui.hpp>
@@ -61,3 +61,17 @@ int compfaces(vector<Point> f1, vector<Point> f2);
 vector<Point> winded(Point p1, Point p2, Point p3, Point p4);
 
 Mat FindCubeOrientation(vector<Point2f> points, Mat cam, Mat dist, Mat &tvec);
+
+int ColMatcher(vector<int> st_color, vector<vector<int>> colors);
+
+float ScalarCompare(Scalar a, Scalar b);
+
+float FaceCompare(SimpleFace a, SimpleFace b);
+
+float FaceCompareYUV(SimpleFace a, SimpleFace b);
+
+float CompareOnlyH(Scalar a, Scalar b);
+
+int MatchToCenter(vector<Scalar> centers, Scalar color);
+
+Cube ProcessColors(vector<SimpleFace> faces);

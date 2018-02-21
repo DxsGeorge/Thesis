@@ -840,16 +840,23 @@ int MatchToCenter(vector<Scalar> centers, Scalar color)
 	return min;
 }
 
+float ptdstw(Scalar a, Scalar b)
+{
+	if (a(1) < 100 || b(1) < 100) return 300.0 + abs(a(0) + b(0));
+	else return abs(a(0) - b(0));
+}
+
 Cube ProcessColors(vector<SimpleFace> faces)
 {
-	vector<SimpleFace> correctedfaces;
+	vector<MatchedFace> correctedfaces;
 	int bestj = 0;
 	int besti = 0;
 	int bestcon = 0;
-	int matchesto = 0;
+	int matchesto;
 	int bestd = 10001;
 	int done = 0;
 	int taken[6] = { 0, 0, 0, 0, 0, 0 };
+	float dist;
 	map<int, int> opposite;
 	opposite[0] = 2;
 	opposite[1] = 3;
@@ -864,37 +871,87 @@ Cube ProcessColors(vector<SimpleFace> faces)
 		for (int j = 0; j < 6; ++j)
 		{
 			assigned[i][j] = -1;
-			if (j == 4) assigned[i][j] = i;
 		}
 	}
-	map<tuple<int, int>, int[]> poss;
 	for (int i = 0; i < 9; ++i)
 	{
-		for (int j = 0; j < 3; ++j)
+		assigned[i][4] = i;
+	}
+	map<tuple<int, int>, int*> poss;
+	for (int j = 0; j < 6; ++j)
+	{
+		for (int i = 0; i < 9; ++i)
 		{
-			tuple<int, int> a;
-			tie(j, i) = a;
-			poss.insert(pair<tuple<int,int>,int[]>(a, range));
+			tuple<int, int> a(j,i);
+			pair< tuple<int, int>, int*> b = make_pair(a,range);
+			poss.insert(b);
 		}
 	}
 	while (done < 48)
 	{
 		bestd = 10000;
 		bool forced = false;
-		for (int i = 0; i < 9; ++i)
+		for (int j = 0; j < 6; ++j)
 		{
-			for (int j = 0; j < 3; ++j)
+			vector<Scalar> facecols = faces[j].getColors();
+			for (int i = 0; i < 9; ++i)
 			{
-				if (i != 4 && assigned[i][j] == -1 && (!forced))
+				if (i != 4 && assigned[j][i] == -1 && (!forced))
 				{
 					int considered = 0;
 					for (int k = 0; k < 6; ++k)
 					{
-						//todo this
+						if (taken[k] < 8 && poss[make_tuple(j,i)][k] != -1)
+						{
+							dist = ptdstw(faces[k].getCenter(),facecols[i]);
+						}
+						considered += 1;
+						if (dist < bestd)
+						{
+							bestd = dist;
+							bestj = j;
+							besti = i;
+							matchesto = k;
+						}
 					}
+					if (besti == i && bestj == j) bestcon = considered;
+					if (considered == 1) forced = true;
 					
 				}
 			}
+		}
+		done += 1;
+		assigned[bestj][besti] = matchesto;
+		int op = opposite[matchesto];
+		tuple<tuple<int,int>,tuple<int,int>> ns;
+		ns = neighbors(bestj, besti);
+		tuple <int, int> ns1 = get<0>(ns);
+		tuple <int, int> ns2 = get<1>(ns);
+		if (get<0>(ns1) != -1)
+		{
+			int *p = poss.at(ns1);
+			for (int i = 0; i < 6; ++i)
+			{
+				if (matchesto == p[i]) poss.at(ns1)[i] = -1;
+				if (op == p[i]) poss.at(ns1)[i] = -1;
+			}
+		}
+		if (get<0>(ns2) != -1)
+		{
+			int *p = poss.at(ns2);
+			for (int i = 0; i < 6; ++i)
+			{
+				if (matchesto == p[i]) poss.at(ns2)[i] = -1;
+				if (op == p[i]) poss.at(ns2)[i] = -1;
+			}
+		}
+		taken[matchesto] += 1;
+	}
+	for (int j = 0; j < 9; ++j)
+	{
+		for (int i = 0; i < 6; ++i)
+		{
+			correctedfaces;
 		}
 	}
 	Cube cube(correctedfaces);

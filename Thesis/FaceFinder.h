@@ -6,7 +6,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <opencv2/highgui/highgui.hpp>
-#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include <map>
 #include <math.h>
@@ -73,5 +73,7 @@ float FaceCompareYUV(SimpleFace a, SimpleFace b);
 float CompareOnlyH(Scalar a, Scalar b);
 
 int MatchToCenter(vector<Scalar> centers, Scalar color);
+
+float ptdstw(Scalar a, Scalar b);
 
 Cube ProcessColors(vector<SimpleFace> faces);

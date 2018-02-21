@@ -78,18 +78,22 @@ public:
 class Cube
 {
 public:
-	SimpleFace F; //front
-	SimpleFace L; //left
-	SimpleFace R; //right
-	SimpleFace U; //under
-	SimpleFace D; //down
-	SimpleFace B; //back
-	Cube(vector<SimpleFace> faces);
+	MatchedFace F; //front
+	MatchedFace L; //left
+	MatchedFace R; //right
+	MatchedFace U; //under
+	MatchedFace D; //down
+	MatchedFace B; //back
+	Cube(vector<MatchedFace> faces);
 };
+
 
 class MatchedFace
 {
 public:
-	vector<String> colors;
-	MatchedFace(vector<String> color);
+	vector<int> colors;
+	MatchedFace();
+	MatchedFace(vector<int> color);
 };
+
+tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s);

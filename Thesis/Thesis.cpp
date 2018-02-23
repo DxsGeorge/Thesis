@@ -70,6 +70,29 @@ int main()
 	int stat = 0;
 
 	vector<SimpleFace> faces;
+
+	bool unassigned = true;
+
+	//sample cube colors for test
+
+	Scalar red = Scalar(8, 190, 100);
+	Scalar orange = Scalar(13, 190, 100);
+	Scalar yellow = Scalar(30, 195, 100);
+	Scalar green = Scalar(70, 195, 100);
+	Scalar blue = Scalar(120, 195, 100);
+	Scalar white = Scalar(37, 20, 200);
+
+	vector<Scalar> f = {blue,blue,yellow,white,yellow,red,red,white,orange};
+	vector<Scalar> l = {blue,red,red,white,red,red,yellow,red,red};
+	vector<Scalar> r = { white, blue, orange, white, orange, blue, orange, yellow, yellow };
+	vector<Scalar> u = { blue, orange, yellow, yellow, blue, yellow, white, orange, orange };
+	vector<Scalar> d = { green, green, green, green, green, green, green, green, green };
+	vector<Scalar> b = { white, orange, white, orange, white, blue, red, yellow, blue };
+	
+	SimpleFace F(f), L(l), R(r), U(u), D(d), B(b);
+	//
+
+
 	while (true)
 	{
 
@@ -274,7 +297,7 @@ int main()
 						{
 							if (ep[i].x>rad && ep[i].x < src.cols / 2 - rad && ep[i].y>rad && ep[i].y < src.rows - rad)
 							{
-								Vec3b color = yuv.at<Vec3b>(ep[i]);
+								Vec3b color = hsv.at<Vec3b>(ep[i]);
 						
 								face.push_back(Scalar(color));
 								circle(src, ep[i], 2, Scalar(0, 0, 0), 1);
@@ -291,9 +314,9 @@ int main()
 						{
 							//if (ScalarCompare(faces[i].getCenter(), face[4]) < 25.5)
 							//if (CompareOnlyH(faces[i].getCenter(), face[4]) < 25) 
-							if	(FaceCompareYUV(faces[i], face) < 5)
+							if	(face.size() < 9 || FaceCompareYUV(faces[i], face) < 1.8)
 							{
-								cout << "same face" << endl;
+								cout << "wrong face" << endl;
 								newface = false;
 							}
 						}
@@ -306,9 +329,15 @@ int main()
 				}
 
 			}
-			if (faces.size() == 6)
-			{
 
+			vector<SimpleFace> samplefaces;
+			samplefaces = { F, L, R, U, D, B };
+			Cube cube;
+			if (unassigned)
+			{
+				cube = ProcessColors(samplefaces);
+				cube.printFaces();
+				unassigned = false;
 			}
 			imshow("Video", src);
 			imshow("Canny", dst);

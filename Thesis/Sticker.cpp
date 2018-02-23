@@ -169,6 +169,21 @@ vector<Scalar> SimpleFace::getColors()
 	return this->colors;
 }
 
+MatchedFace::MatchedFace()
+{
+
+}
+
+MatchedFace::MatchedFace(vector<int> color)
+{
+	this->colors = color;
+}
+
+Cube::Cube()
+{
+
+}
+
 Cube::Cube(vector<MatchedFace> faces)
 {
 	if (faces.size() != 6) cout << "too many faces" << endl;
@@ -180,9 +195,37 @@ Cube::Cube(vector<MatchedFace> faces)
 	this->D = faces[5];
 }
 
-MatchedFace::MatchedFace(vector<int> color)
+void Cube::printFaces()
 {
-	this->colors = color;
+	cout << "F: " << endl;
+	cout << "| " << this->F.colors[0] << " | " << F.colors[1] << " | " << F.colors[2] << " |" << endl;
+	cout << "| " << this->F.colors[3] << " | " << F.colors[4] << " | " << F.colors[5] << " |" << endl;
+	cout << "| " << this->F.colors[8] << " | " << F.colors[7] << " | " << F.colors[8] << " |" << endl;
+
+	cout << "L :" << endl;
+	cout << "| " << this->L.colors[0] << " | " << L.colors[1] << " | " << L.colors[2] << " |" << endl;
+	cout << "| " << this->L.colors[3] << " | " << L.colors[4] << " | " << L.colors[5] << " |" << endl;
+	cout << "| " << this->L.colors[8] << " | " << L.colors[7] << " | " << L.colors[8] << " |" << endl;
+
+	cout << "R: " << endl;
+	cout << "| " << this->R.colors[0] << " | " << R.colors[1] << " | " << R.colors[2] << " |" << endl;
+	cout << "| " << this->R.colors[3] << " | " << R.colors[4] << " | " << R.colors[5] << " |" << endl;
+	cout << "| " << this->R.colors[8] << " | " << R.colors[7] << " | " << R.colors[8] << " |" << endl;
+
+	cout << "U: " << endl;
+	cout << "| " << this->U.colors[0] << " | " << U.colors[1] << " | " << U.colors[2] << " |" << endl;
+	cout << "| " << this->U.colors[3] << " | " << U.colors[4] << " | " << U.colors[5] << " |" << endl;
+	cout << "| " << this->U.colors[8] << " | " << U.colors[7] << " | " << U.colors[8] << " |" << endl;
+
+	cout << "D: " << endl;
+	cout << "| " << this->D.colors[0] << " | " << D.colors[1] << " | " << D.colors[2] << " |" << endl;
+	cout << "| " << this->D.colors[3] << " | " << D.colors[4] << " | " << D.colors[5] << " |" << endl;
+	cout << "| " << this->D.colors[8] << " | " << D.colors[7] << " | " << D.colors[8] << " |" << endl;
+
+	cout << "B: " << endl;
+	cout << "| " << this->B.colors[0] << " | " << B.colors[1] << " | " << B.colors[2] << " |" << endl;
+	cout << "| " << this->B.colors[3] << " | " << B.colors[4] << " | " << B.colors[5] << " |" << endl;
+	cout << "| " << this->B.colors[8] << " | " << B.colors[7] << " | " << B.colors[8] << " |" << endl;
 }
 
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s)

@@ -75,6 +75,14 @@ public:
 	vector<Scalar> getColors();
 };
 
+class MatchedFace
+{
+public:
+	vector<int> colors;
+	MatchedFace();
+	MatchedFace(vector<int> color);
+};
+
 class Cube
 {
 public:
@@ -84,16 +92,9 @@ public:
 	MatchedFace U; //under
 	MatchedFace D; //down
 	MatchedFace B; //back
+	Cube();
 	Cube(vector<MatchedFace> faces);
-};
-
-
-class MatchedFace
-{
-public:
-	vector<int> colors;
-	MatchedFace();
-	MatchedFace(vector<int> color);
+	void printFaces();
 };
 
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s);

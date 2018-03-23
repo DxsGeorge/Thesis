@@ -83,6 +83,14 @@ public:
 	MatchedFace(vector<int> color);
 };
 
+class ColorFace
+{
+public:
+	vector<char> colors;
+	ColorFace();
+	ColorFace(vector<char>);
+};
+
 class Cube
 {
 public:
@@ -92,9 +100,23 @@ public:
 	MatchedFace U; //under
 	MatchedFace D; //down
 	MatchedFace B; //back
+
+	ColorFace cF; //same
+	ColorFace cR;
+	ColorFace cL;
+	ColorFace cU;
+	ColorFace cD;
+	ColorFace cB;
+
 	Cube();
 	Cube(vector<MatchedFace> faces);
+	vector<MatchedFace> faces;
+	vector<char> colors_c;
 	void printFaces();
+	void ColToCenters();
+	void NumToColors();
 };
 
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s);
+
+Scalar colavg(Mat src, Point2f point, float dist);

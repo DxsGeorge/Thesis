@@ -189,43 +189,88 @@ Cube::Cube(vector<MatchedFace> faces)
 	if (faces.size() != 6) cout << "too many faces" << endl;
 	this->F = faces[0];
 	this->L = faces[1];
-	this->B = faces[2];
-	this->R = faces[3];
-	this->U = faces[4];
-	this->D = faces[5];
+	this->R = faces[2];
+	this->U = faces[3];
+	this->D = faces[4];
+	this->B = faces[5];
+	this->faces = { this->F, this->L, this->R, this->U, this->D, this->B };
+	//this->ColToCenters();
+	//this->NumToColors();
 }
 
 void Cube::printFaces()
 {
 	cout << "F: " << endl;
-	cout << "| " << this->F.colors[0] << " | " << F.colors[1] << " | " << F.colors[2] << " |" << endl;
-	cout << "| " << this->F.colors[3] << " | " << F.colors[4] << " | " << F.colors[5] << " |" << endl;
-	cout << "| " << this->F.colors[8] << " | " << F.colors[7] << " | " << F.colors[8] << " |" << endl;
+	cout << "| " << this->F.colors[0] << " | " << F.colors[3] << " | " << F.colors[6] << " |" << endl;
+	cout << "| " << this->F.colors[1] << " | " << F.colors[4] << " | " << F.colors[7] << " |" << endl;
+	cout << "| " << this->F.colors[2] << " | " << F.colors[5] << " | " << F.colors[8] << " |" << endl;
 
 	cout << "L :" << endl;
-	cout << "| " << this->L.colors[0] << " | " << L.colors[1] << " | " << L.colors[2] << " |" << endl;
-	cout << "| " << this->L.colors[3] << " | " << L.colors[4] << " | " << L.colors[5] << " |" << endl;
-	cout << "| " << this->L.colors[8] << " | " << L.colors[7] << " | " << L.colors[8] << " |" << endl;
+	cout << "| " << this->L.colors[0] << " | " << L.colors[3] << " | " << L.colors[6] << " |" << endl;
+	cout << "| " << this->L.colors[1] << " | " << L.colors[4] << " | " << L.colors[7] << " |" << endl;
+	cout << "| " << this->L.colors[2] << " | " << L.colors[5] << " | " << L.colors[8] << " |" << endl;
 
 	cout << "R: " << endl;
-	cout << "| " << this->R.colors[0] << " | " << R.colors[1] << " | " << R.colors[2] << " |" << endl;
-	cout << "| " << this->R.colors[3] << " | " << R.colors[4] << " | " << R.colors[5] << " |" << endl;
-	cout << "| " << this->R.colors[8] << " | " << R.colors[7] << " | " << R.colors[8] << " |" << endl;
+	cout << "| " << this->R.colors[0] << " | " << R.colors[3] << " | " << R.colors[6] << " |" << endl;
+	cout << "| " << this->R.colors[1] << " | " << R.colors[4] << " | " << R.colors[7] << " |" << endl;
+	cout << "| " << this->R.colors[2] << " | " << R.colors[5] << " | " << R.colors[8] << " |" << endl;
 
 	cout << "U: " << endl;
-	cout << "| " << this->U.colors[0] << " | " << U.colors[1] << " | " << U.colors[2] << " |" << endl;
-	cout << "| " << this->U.colors[3] << " | " << U.colors[4] << " | " << U.colors[5] << " |" << endl;
-	cout << "| " << this->U.colors[8] << " | " << U.colors[7] << " | " << U.colors[8] << " |" << endl;
+	cout << "| " << this->U.colors[0] << " | " << U.colors[3] << " | " << U.colors[6] << " |" << endl;
+	cout << "| " << this->U.colors[1] << " | " << U.colors[4] << " | " << U.colors[7] << " |" << endl;
+	cout << "| " << this->U.colors[2] << " | " << U.colors[5] << " | " << U.colors[8] << " |" << endl;
 
 	cout << "D: " << endl;
-	cout << "| " << this->D.colors[0] << " | " << D.colors[1] << " | " << D.colors[2] << " |" << endl;
-	cout << "| " << this->D.colors[3] << " | " << D.colors[4] << " | " << D.colors[5] << " |" << endl;
-	cout << "| " << this->D.colors[8] << " | " << D.colors[7] << " | " << D.colors[8] << " |" << endl;
+	cout << "| " << this->D.colors[0] << " | " << D.colors[3] << " | " << D.colors[6] << " |" << endl;
+	cout << "| " << this->D.colors[1] << " | " << D.colors[4] << " | " << D.colors[7] << " |" << endl;
+	cout << "| " << this->D.colors[2] << " | " << D.colors[5] << " | " << D.colors[8] << " |" << endl;
 
 	cout << "B: " << endl;
-	cout << "| " << this->B.colors[0] << " | " << B.colors[1] << " | " << B.colors[2] << " |" << endl;
-	cout << "| " << this->B.colors[3] << " | " << B.colors[4] << " | " << B.colors[5] << " |" << endl;
-	cout << "| " << this->B.colors[8] << " | " << B.colors[7] << " | " << B.colors[8] << " |" << endl;
+	cout << "| " << this->B.colors[0] << " | " << B.colors[3] << " | " << B.colors[6] << " |" << endl;
+	cout << "| " << this->B.colors[1] << " | " << B.colors[4] << " | " << B.colors[7] << " |" << endl;
+	cout << "| " << this->B.colors[2] << " | " << B.colors[5] << " | " << B.colors[8] << " |" << endl;
+}
+
+bool ScalarCompareH(const Scalar& a, const Scalar& b)
+{
+	return a[0] < b[0];
+}
+
+ColorFace::ColorFace()
+{
+
+}
+
+void Cube::ColToCenters()
+{
+	vector<int> centers;
+	centers = { this->F.colors[4], this->L.colors[4], this->R.colors[4], this->U.colors[4], this->D.colors[4], this->B.colors[4] };
+	
+	for (size_t i = 0; i < 6; ++i)
+	{
+		if (centers[i] < 100)
+		{
+			int temp = centers[6];
+			centers[6] = centers[i];
+			centers[i] = temp;
+		}
+	}
+	sort(centers.begin(), centers.end()-1, ScalarCompareH);
+	for (size_t i = 0; i < 6; ++i)
+	{
+		if (this->faces[i].colors[0] == centers[0]) this->colors_c[i] = 'R';
+		else if (this->faces[i].colors[0] == centers[1]) this->colors_c[i] = 'O';
+		else if (this->faces[i].colors[0] == centers[2]) this->colors_c[i] = 'Y';
+		else if (this->faces[i].colors[0] == centers[3]) this->colors_c[i] = 'G';
+		else if (this->faces[i].colors[0] == centers[4]) this->colors_c[i] = 'B';
+		else if (this->faces[i].colors[0] == centers[5]) this->colors_c[i] = 'W';
+	}
+
+}
+
+void Cube::NumToColors()
+{
+
 }
 
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s)
@@ -287,4 +332,16 @@ tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s)
 	if (f == 5 && s == 8) {a = make_tuple(3, 6); b = make_tuple(0, 8);}
 	tuple<tuple<int,int>, tuple<int,int>> neighbor(a,b);
 	return neighbor;
+}
+
+Scalar colavg(Mat src, Point2f point, float dist)
+{
+	Scalar col, sum;
+	vector<Point2f> points = pointcube(point, dist);
+	for (size_t i = 0; i < points.size(); ++i)
+	{
+		sum += Scalar(src.at<Vec3b>(points[i]));
+	}
+	col = Scalar(sum[0]/9,sum[1]/9,sum[2]/9);
+	return col;
 }

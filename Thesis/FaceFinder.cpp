@@ -842,7 +842,23 @@ int MatchToCenter(vector<Scalar> centers, Scalar color)
 
 float ptdstw(Scalar a, Scalar b)
 {
-	if (a(1) < 100 || b(1) < 100) return 300.0 + abs(a(0) + b(0));
+	float dist;
+	if (a(1) < 100 || b(1) < 100)
+	{
+		dist = 1000;
+		if (a(1) < 100 && b(1) < 100)
+		{
+			dist = abs(a(1) - b(1));
+		}	
+	}
+	else dist = abs(a(0) - b(0));
+	
+	return dist;
+}
+
+float ptdstw2(Scalar a, Scalar b)
+{
+	if (a(1) < 100 || b(1) < 100) return -1;
 	else return abs(a(0) - b(0));
 }
 
@@ -870,6 +886,8 @@ Cube ProcessColors(vector<SimpleFace> faces)
 	opposite[4] = 5;
 	opposite[5] = 4;
 	vector<int> range = { 0, 1, 2, 3, 4, 5 };
+
+	
 	int assigned[6][9] = {};
 	for (int i = 0; i < 6; ++i)
 	{
@@ -882,6 +900,8 @@ Cube ProcessColors(vector<SimpleFace> faces)
 	{
 		assigned[i][4] = i;
 	}
+	
+
 	map<tuple<int, int>, vector<int>> poss;
 	for (int j = 0; j < 6; ++j)
 	{
@@ -901,36 +921,37 @@ Cube ProcessColors(vector<SimpleFace> faces)
 			vector<Scalar> facecols = faces[j].getColors();
 			for (int i = 0; i < 9; ++i)
 			{
-				if (i != 4 && assigned[j][i] == -1 && (!forced))
+				if ((i != 4) && (assigned[j][i] == -1) && (!forced))
 				{
 					int considered = 0;
 					for (int k = 0; k < 6; ++k)
 					{
-						if (taken[k] < 8 && poss[make_tuple(j,i)][k] != -1)
+						if (taken[k] < 8 && poss[make_tuple(j, i)][k] != -1)
 						{
-							dist = ptdstw(faces[k].getCenter(),facecols[i]);
-						}
-						considered ++;
-						if (dist < bestd)
-						{
-							bestd = dist;
-							bestj = j;
-							besti = i;
-							matchesto = k;
+							dist = ptdstw(faces[k].getCenter(), facecols[i]);
+						
+							considered++;
+							if (dist < bestd)
+							{
+								bestd = dist;
+								bestj = j;
+								besti = i;
+								matchesto = k;
+							}
 						}
 					}
 					if (besti == i && bestj == j) bestcon = considered;
 					if (considered == 1)
 					{
 						forced = true;
-						cout << "Sticker" << i << ", " << j << " was forced." << endl;
+						cout << "Sticker" << j << ", " << i << " was forced." << endl;
 					}
 				}
 			}
 		}
 		done += 1;
 		assigned[bestj][besti] = matchesto;
-		cout << "Sticker " << bestj << " ," << besti << " was matched to " << matchesto << "." << endl;
+		if (besti == 4) cout << "what" << endl;
 		int op = opposite[matchesto];
 		tuple<tuple<int,int>,tuple<int,int>> ns;
 		ns = neighbors(bestj, besti);
@@ -956,16 +977,16 @@ Cube ProcessColors(vector<SimpleFace> faces)
 		}
 		taken[matchesto] += 1;
 	}
-	for (int i = 0; i < 6; ++i)
+	for (int j = 0; j < 6; ++j)
 	{
 		vector<int> corrface;
-		for (int j = 0; j < 9; ++j)
+		for (int i = 0; i < 9; ++i)
 		{
-			//todo
-			corrface.push_back(assigned[i][j]);
+			corrface.push_back(assigned[j][i]);
 		}
 		correctedfaces.push_back(MatchedFace(corrface));
 	}
 	Cube cube(correctedfaces);
 	return cube;
 }
+

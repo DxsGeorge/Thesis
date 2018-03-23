@@ -76,6 +76,8 @@ int MatchToCenter(vector<Scalar> centers, Scalar color);
 
 float ptdstw(Scalar a, Scalar b);
 
+float ptdstw2(Scalar a, Scalar b);
+
 float ptdst(Scalar a, Scalar b);
 
 Cube ProcessColors(vector<SimpleFace> faces);

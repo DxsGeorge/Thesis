@@ -630,3 +630,20 @@ bool PointsInLine(Point a, Point b, Point c)
 {
 	return ((max(abs(b.y-a.y)*(c.x-b.x),abs((c.y-b.y)*(b.x-a.x))))/(min(abs(b.y-a.y)*(c.x-b.x),abs((c.y-b.y)*(b.x-a.x))))<1.3);
 }
+
+vector<Point2f> pointcube(Point2f a, float dist)
+{
+	vector<Point2f> cube;
+	dist = dist / 4.0;
+	Point2f ul = Point2f(a.x - dist, a.y - dist);
+	Point2f um = Point2f(a.x, a.y - dist);
+	Point2f ur = Point2f(a.x + dist, a.y - dist);
+	Point2f ml = Point2f(a.x - dist, a.y);
+	Point2f mm = a;
+	Point2f mr = Point2f(a.x + dist, a.y);
+	Point2f bl = Point2f(a.x - dist, a.y + dist);
+	Point2f bm = Point2f(a.x, a.y + dist);
+	Point2f br = Point2f(a.x + dist, a.y + dist);
+	cube = { ul, um, ur, ml, mm, mr, bl, bm, br };
+	return cube;
+}

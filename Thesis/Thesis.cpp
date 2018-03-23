@@ -32,18 +32,30 @@ int main()
 	Mat prev_dst;
 	Mat dst,sr1;
 	Mat gray, prev_gray;
-	Mat hsv, yuv;
+	Mat rgb, hsv, yuv;
 	vector<Point> points, pt, lastpt;
 	vector<KeyPoint> keypoints;
 	vector<Point2f> pointsf, pointsf_next;
 	int shown_face_count = 0;
-	int thr = 200;
+	int thr = 100;
 	int succ = 0;
 	int detected = 0;
 	int tracking = 0;
 	int count = 0;
 	bool colorextract = false;
 
+	int assigned[6][9] = {};
+	for (int i = 0; i < 6; ++i)
+	{
+		for (int j = 0; j < 9; ++j)
+		{
+			assigned[i][j] = -1;
+		}
+	}
+	for (int i = 0; i < 6; ++i)
+	{
+		assigned[i][4] = i;
+	}
 
 	vector<Scalar> face;
 
@@ -75,19 +87,19 @@ int main()
 
 	//sample cube colors for test
 
-	Scalar red = Scalar(8, 190, 100);
-	Scalar orange = Scalar(13, 190, 100);
-	Scalar yellow = Scalar(30, 195, 100);
-	Scalar green = Scalar(70, 195, 100);
-	Scalar blue = Scalar(120, 195, 100);
-	Scalar white = Scalar(37, 20, 200);
+	Scalar cR = Scalar(8, 190, 100);
+	Scalar O = Scalar(13, 190, 100);
+	Scalar Y = Scalar(30, 195, 100);
+	Scalar G = Scalar(70, 195, 100);
+	Scalar cB = Scalar(120, 195, 100);
+	Scalar W = Scalar(37, 20, 200);
 
-	vector<Scalar> f = {blue,blue,yellow,white,yellow,red,red,white,orange};
-	vector<Scalar> l = {blue,red,red,white,red,red,yellow,red,red};
-	vector<Scalar> r = { white, blue, orange, white, orange, blue, orange, yellow, yellow };
-	vector<Scalar> u = { blue, orange, yellow, yellow, blue, yellow, white, orange, orange };
-	vector<Scalar> d = { green, green, green, green, green, green, green, green, green };
-	vector<Scalar> b = { white, orange, white, orange, white, blue, red, yellow, blue };
+	vector<Scalar> f = { G , Y , O , W , Y , O , cB , G , O};
+	vector<Scalar> l = { W , O , cB , cB , cR , cB , G , cR , cR };
+	vector<Scalar> r = { cR , G , cR , cR , O , cR , cR , cR , W };
+	vector<Scalar> u = { Y , cB , W , G , cB , O , O , O ,O };
+	vector<Scalar> d = { G , G , cB , Y , G , cB , Y , Y , cB };
+	vector<Scalar> b = { Y , W , Y , W , W , W , G , Y , W };
 	
 	SimpleFace F(f), L(l), R(r), U(u), D(d), B(b);
 	//
@@ -105,65 +117,10 @@ int main()
 			pyrDown(gray, gray, Size(src.cols / 2, src.rows / 2));
 			flip(gray, gray, 1);
 			dst = FilterImage(src);
+			src.copyTo(rgb);
 			cvtColor(src, hsv, CV_BGR2HSV);
 			cvtColor(src, yuv, CV_BGR2YCrCb);
-			if (tracking_mode == 0)
-			{
-
-				bool success;
-				success = BlobDetectFeatures(dst, dst, points, keypoints);
-				if (success)
-				{
-					//tracking_mode = 1;
-					cout << "success \n";
-					KeyPoint::convert(keypoints, pointsf);
-					RotatedRect rect = minAreaRect(pointsf);
-					vector<Point> pts;
-					Point2f recpoints[4];
-					rect.points(recpoints);
-					pts.push_back(recpoints[0]);
-					pts.push_back(recpoints[1]);
-					pts.push_back(recpoints[2]);
-					pts.push_back(recpoints[3]);
-					//ShowFaceCorner(src, pts);
-					vector<Point2f> corners;
-					corners=FindCubeCorners(pts);
-					
-					line(src,corners[0],corners[2],Scalar(255,255,255),2 );
-					line(src, corners[3], corners[1], Scalar(255, 255, 255), 2);
-					circle(src, corners[0], 2, Scalar(255, 255, 255), 2);
-					circle(src, corners[1], 2, Scalar(255, 255, 255), 2);
-					circle(src, corners[3], 2, Scalar(255, 255, 255), 2);
-					circle(src, corners[2], 2, Scalar(255, 255, 255), 2);
-				}
-			}
-			else if (tracking_mode == 1)
-			{
-
-				//FIX VECTOR POINTS SIZE	
-				of = LKOpticalFlow(prev_gray, gray, pointsf, pointsf_next);
-				if (!of)
-				{
-					tracking_mode = 0;
-					points.clear();
-					shown_face_count = 0;
-				}
-				RotatedRect rect = minAreaRect(pointsf);
-				vector<Point> pts;
-				Point2f recpoints[4];
-				rect.points(recpoints);
-				pts.push_back(recpoints[0]);
-				pts.push_back(recpoints[1]);
-				pts.push_back(recpoints[2]);
-				pts.push_back(recpoints[3]);
-				ShowFaceCorner(src, pts);
-				line(src, recpoints[0], recpoints[1], Scalar(255, 255, 255), 2);
-				line(src, recpoints[1], recpoints[2], Scalar(255, 255, 255), 2);
-				line(src, recpoints[2], recpoints[3], Scalar(255, 255, 255), 2);
-				line(src, recpoints[3], recpoints[0], Scalar(255, 255, 255), 2);
-				pointsf = pointsf_next;
-			}
-			else if (tracking_mode == 2)
+			if (tracking_mode == 2)
 			{
 				if (tracking > 0)
 				{
@@ -263,17 +220,19 @@ int main()
 						lastpt = pt;
 					}
 					Point p3(pt[2].x + pt[1].x - pt[0].x, pt[2].y + pt[1].y - pt[0].y);
-
+#if 1
 					line(src, pt[0], pt[1], Scalar(0, 255, 0), 2);
 					line(src, pt[1], p3, Scalar(0, 255, 0), 2);
 					line(src, p3, pt[2], Scalar(0, 255, 0), 2);
 					line(src, pt[2], pt[0], Scalar(0, 255, 0), 2);
-
+#endif					
 					pt = winded(pt[0], pt[1], pt[2], p3);
-
+					
 					v1 = Point(pt[1].x - pt[0].x, pt[1].y - pt[0].y);
 					v2 = Point(pt[3].x - pt[0].x, pt[3].y - pt[0].y);
 					p0 = Point(pt[0].x, pt[0].y);
+					
+
 
 					vector<Point2f> ep;
 					int i = 1;
@@ -293,24 +252,27 @@ int main()
 							}
 						}
 						float rad = Distance(v1, Point(0, 0)) / 6.0;
+						rad = 0.8*rad;
+						float stickdist = Distance(ep[0], ep[1]);
 						for (size_t i = 0; i < ep.size(); ++i)
 						{
-							if (ep[i].x>rad && ep[i].x < src.cols / 2 - rad && ep[i].y>rad && ep[i].y < src.rows - rad)
+							//if (ep[i].x>rad && ep[i].x < src.cols / 2 - rad && ep[i].y>rad && ep[i].y < src.rows - rad)
 							{
+								Scalar col_avg;
+								vector<Point2f> cubepoints = pointcube(ep[i], stickdist);
+								
 								Vec3b color = hsv.at<Vec3b>(ep[i]);
-						
-								face.push_back(Scalar(color));
-								circle(src, ep[i], 2, Scalar(0, 0, 0), 1);
-								if (i == 4)
+								col_avg = colavg(hsv, ep[i], stickdist);
+								face.push_back(col_avg);
+								for (size_t it = 0; it < cubepoints.size(); ++it)
 								{
-									
-									cout << color << endl;
-									
+									circle(src, cubepoints[it], 2, Scalar(255, 255, 255), 1);
 								}
 							}
 						}
 						bool newface = true;
-						for (size_t i = 0; i < faces.size(); ++i)
+						if (face.size() != 9) newface = false;
+						for (size_t i = 0; i < faces.size() && newface; ++i)
 						{
 							//if (ScalarCompare(faces[i].getCenter(), face[4]) < 25.5)
 							//if (CompareOnlyH(faces[i].getCenter(), face[4]) < 25) 
@@ -319,8 +281,18 @@ int main()
 								cout << "wrong face" << endl;
 								newface = false;
 							}
+							else
+							{
+								for (size_t i = 0; i < face.size(); ++i)
+								{
+									cout << face[i] << endl;
+								}
+							}
 						}
-						if (newface) faces.push_back(SimpleFace(face));
+						if (newface)
+						{
+							faces.push_back(SimpleFace(face));
+						}
 						face.clear();
 						cout << faces.size() << endl;
 						colorextract = false;
@@ -333,6 +305,7 @@ int main()
 			vector<SimpleFace> samplefaces;
 			samplefaces = { F, L, R, U, D, B };
 			Cube cube;
+			//if (faces.size() == 6 && unassigned)
 			if (unassigned)
 			{
 				cube = ProcessColors(samplefaces);

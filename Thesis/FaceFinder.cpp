@@ -879,12 +879,12 @@ Cube ProcessColors(vector<SimpleFace> faces)
 	int taken[6] = { 0, 0, 0, 0, 0, 0 };
 	float dist;
 	map<int, int> opposite;
-	opposite[0] = 2;
-	opposite[1] = 3;
-	opposite[2] = 0;
-	opposite[3] = 1;
-	opposite[4] = 5;
-	opposite[5] = 4;
+	opposite[0] = 5;
+	opposite[1] = 2;
+	opposite[2] = 1;
+	opposite[3] = 4;
+	opposite[4] = 3;
+	opposite[5] = 0;
 	vector<int> range = { 0, 1, 2, 3, 4, 5 };
 
 	
@@ -962,8 +962,14 @@ Cube ProcessColors(vector<SimpleFace> faces)
 			//int *p = poss.at(ns1);
 			for (int i = 0; i < 6; ++i)
 			{
-				if (matchesto == poss.at(ns1)[i]) poss.at(ns1)[i] = -1;
-				if (op == poss.at(ns1)[i]) poss.at(ns1)[i] = -1;
+				if (matchesto == poss.at(ns1)[i])
+				{
+					poss.at(ns1)[i] = -1;
+				}
+				if (op == poss.at(ns1)[i])
+				{
+					poss.at(ns1)[i] = -1;
+				}
 			}
 		}
 		if (get<0>(ns2) != -1)
@@ -971,8 +977,14 @@ Cube ProcessColors(vector<SimpleFace> faces)
 			//int *p = poss.at(ns2);
 			for (int i = 0; i < 6; ++i)
 			{
-				if (matchesto == poss.at(ns2)[i]) poss.at(ns2)[i] = -1;
-				if (op == poss.at(ns2)[i]) poss.at(ns2)[i] = -1;
+				if (matchesto == poss.at(ns2)[i])
+				{
+					poss.at(ns2)[i] = -1;
+				}
+				if (op == poss.at(ns2)[i]) 
+				{ 
+					poss.at(ns2)[i] = -1; 
+				}
 			}
 		}
 		taken[matchesto] += 1;

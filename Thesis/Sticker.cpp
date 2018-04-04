@@ -277,59 +277,59 @@ tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s)
 {
 	tuple<int, int> a;
 	tuple<int, int> b;
-	if (f == 0 && s == 0) { a=make_tuple(1, 2 ); b = make_tuple( 4, 0 );}
-	if (f == 0 && s == 1) { a = make_tuple( 4, 3 ); b = make_tuple(-1, -1);}
-	if (f == 0 && s == 2) { a = make_tuple( 4, 6 ); b = make_tuple( 3, 0 );}
-	if (f == 0 && s == 3) { a = make_tuple( 1, 5 ); b = make_tuple( -1, -1 );}
-	if (f == 0 && s == 5) { a = make_tuple( 3, 3 ); b = make_tuple( -1, -1 );}
-	if (f == 0 && s == 6) { a = make_tuple( 1, 8 ); b = make_tuple( 5, 2 );}
-	if (f == 0 && s == 7) { a = make_tuple( 5, 5 ); b = make_tuple( -1, -1 );}
-	if (f == 0 && s == 8) { a = make_tuple( 3, 6 ); b = make_tuple( 5, 8 );}
+	if (f == 0 && s == 0) { a = make_tuple( 2, 6 ); b = make_tuple( 3, 2 );}
+	if (f == 0 && s == 1) { a = make_tuple( 2, 7 ); b = make_tuple(-1, -1);}
+	if (f == 0 && s == 2) { a = make_tuple( 2, 8 ); b = make_tuple( 4, 0 );}
+	if (f == 0 && s == 3) { a = make_tuple( 3, 5 ); b = make_tuple( -1, -1 );}
+	if (f == 0 && s == 5) { a = make_tuple( 4, 3 ); b = make_tuple( -1, -1 );}
+	if (f == 0 && s == 6) { a = make_tuple( 3, 8 ); b = make_tuple( 1, 0 );}
+	if (f == 0 && s == 7) { a = make_tuple( 1, 1 ); b = make_tuple( -1, -1 );}
+	if (f == 0 && s == 8) { a = make_tuple( 1, 2 ); b = make_tuple( 4, 6 );}
 
-	if (f == 1 && s == 0) { a = make_tuple( 0, 2 ); b = make_tuple( 4, 2 );}
-	if (f == 1 && s == 1) { a = make_tuple( 4, 1 ); b = make_tuple( -1, -1 );}
-	if (f == 1 && s == 2) { a = make_tuple( 4, 0 ); b = make_tuple( 0, 0 );}
-	if (f == 1 && s == 3) { a = make_tuple( 2, 5 ); b = make_tuple( -1, -1 );}
-	if (f == 1 && s == 5) { a = make_tuple( 0, 3 ); b = make_tuple( -1, -1 );}
-	if (f == 1 && s == 6) { a = make_tuple( 2, 8 ); b = make_tuple( 5, 0 );}
-	if (f == 1 && s == 7) {a = make_tuple(5, 1); b = make_tuple(-1, -1);}
-	if (f == 1 && s == 8) {a = make_tuple(0, 6); b = make_tuple(5, 2);}
+	if (f == 1 && s == 0) { a = make_tuple( 0, 6 ); b = make_tuple( 3, 8 );}
+	if (f == 1 && s == 1) { a = make_tuple( 0, 7 ); b = make_tuple( -1, -1 );}
+	if (f == 1 && s == 2) { a = make_tuple( 0, 8 ); b = make_tuple( 4, 6 );}
+	if (f == 1 && s == 3) { a = make_tuple( 3, 7 ); b = make_tuple( -1, -1 );}
+	if (f == 1 && s == 5) { a = make_tuple( 4, 7 ); b = make_tuple( -1, -1 );}
+	if (f == 1 && s == 6) { a = make_tuple( 3, 6 ); b = make_tuple( 5, 0 );}
+	if (f == 1 && s == 7) { a = make_tuple( 5, 1 ); b = make_tuple(-1, -1);}
+	if (f == 1 && s == 8) { a = make_tuple( 4, 8 ); b = make_tuple(5, 2);}
 
-	if (f == 2 && s == 0) {a = make_tuple(4, 8); b = make_tuple(3, 2);}
-	if (f == 2 && s == 1) {a = make_tuple(4, 5); b = make_tuple(-1, -1);}
-	if (f == 2 && s == 2) {a = make_tuple(4, 2); b = make_tuple(1, 0);}
-	if (f == 2 && s == 3) {a = make_tuple(3, 5); b = make_tuple(-1, -1);}
-	if (f == 2 && s == 5) {a = make_tuple(1, 3); b = make_tuple(-1, -1);}
-	if (f == 2 && s == 6) {a = make_tuple(3, 8); b = make_tuple(5, 6);}
-	if (f == 2 && s == 7) {a = make_tuple(5, 3); b = make_tuple(-1, -1);}
-	if (f == 2 && s == 8) {a = make_tuple(1, 6); b = make_tuple(5, 0);}
+	if (f == 2 && s == 0) { a = make_tuple(3, 0); b = make_tuple(5, 6);}
+	if (f == 2 && s == 1) { a = make_tuple(5, 7); b = make_tuple(-1, -1);}
+	if (f == 2 && s == 2) { a = make_tuple(4, 2); b = make_tuple(5, 8);}
+	if (f == 2 && s == 3) { a = make_tuple(3, 1); b = make_tuple(-1, -1);}
+	if (f == 2 && s == 5) { a = make_tuple(4, 1); b = make_tuple(-1, -1);}
+	if (f == 2 && s == 6) { a = make_tuple(0, 0); b = make_tuple(3, 2);}
+	if (f == 2 && s == 7) { a = make_tuple(0, 1); b = make_tuple(-1, -1);}
+	if (f == 2 && s == 8) { a = make_tuple(0, 2); b = make_tuple(4, 0);}
 
-	if (f == 3 && s == 0) {a = make_tuple(4, 6); b = make_tuple(0, 2);}
-	if (f == 3 && s == 1) {a = make_tuple(4, 7); b = make_tuple(-1, -1);}
-	if (f == 3 && s == 2) {a = make_tuple(4, 8); b = make_tuple(2, 0);}
-	if (f == 3 && s == 3) {a = make_tuple(0, 5); b = make_tuple(-1, -1);}
-	if (f == 3 && s == 5) {a = make_tuple(2, 3); b = make_tuple(-1, -1);}
-	if (f == 3 && s == 6) {a = make_tuple(0, 8); b = make_tuple(5, 8);}
-	if (f == 3 && s == 7) {a = make_tuple(5, 7); b = make_tuple(-1, -1);}
-	if (f == 3 && s == 8) {a = make_tuple(2, 6); b = make_tuple(5, 6);}
+	if (f == 3 && s == 0) {a = make_tuple(2, 0); b = make_tuple(5, 6);}
+	if (f == 3 && s == 1) {a = make_tuple(2, 3); b = make_tuple(-1, -1);}
+	if (f == 3 && s == 2) {a = make_tuple(0, 0); b = make_tuple(2, 6);}
+	if (f == 3 && s == 3) {a = make_tuple(5, 3); b = make_tuple(-1, -1);}
+	if (f == 3 && s == 5) {a = make_tuple(0, 3); b = make_tuple(-1, -1);}
+	if (f == 3 && s == 6) {a = make_tuple(1, 6); b = make_tuple(5, 0);}
+	if (f == 3 && s == 7) {a = make_tuple(1, 3); b = make_tuple(-1, -1);}
+	if (f == 3 && s == 8) {a = make_tuple(0, 6); b = make_tuple(1, 0);}
 
-	if (f == 4 && s == 0) {a = make_tuple(1, 2); b = make_tuple(0, 0);}
-	if (f == 4 && s == 1) {a = make_tuple(1, 1); b = make_tuple(-1, -1);}
-	if (f == 4 && s == 2) {a = make_tuple(1, 0); b = make_tuple(2, 2);}
-	if (f == 4 && s == 3) {a = make_tuple(0, 1); b = make_tuple(-1, -1);}
-	if (f == 4 && s == 5) {a = make_tuple(2, 1); b = make_tuple(-1, -1);}
-	if (f == 4 && s == 6) {a = make_tuple(0, 2); b = make_tuple(3, 0);}
-	if (f == 4 && s == 7) {a = make_tuple(3, 1); b = make_tuple(-1, -1);}
-	if (f == 4 && s == 8) {a = make_tuple(3, 2); b = make_tuple(2, 0);}
+	if (f == 4 && s == 0) {a = make_tuple(0, 2); b = make_tuple(2, 8);}
+	if (f == 4 && s == 1) {a = make_tuple(2, 5); b = make_tuple(-1, -1);}
+	if (f == 4 && s == 2) {a = make_tuple(2, 2); b = make_tuple(5, 8);}
+	if (f == 4 && s == 3) {a = make_tuple(0, 5); b = make_tuple(-1, -1);}
+	if (f == 4 && s == 5) {a = make_tuple(5, 5); b = make_tuple(-1, -1);}
+	if (f == 4 && s == 6) {a = make_tuple(0, 8); b = make_tuple(1, 2);}
+	if (f == 4 && s == 7) {a = make_tuple(1, 5); b = make_tuple(-1, -1);}
+	if (f == 4 && s == 8) {a = make_tuple(1, 8); b = make_tuple(5, 8);}
 
-	if (f == 5 && s == 0) {a = make_tuple(1, 6); b = make_tuple(2, 8);}
+	if (f == 5 && s == 0) {a = make_tuple(3, 2); b = make_tuple(1, 6);}
 	if (f == 5 && s == 1) {a = make_tuple(1, 7); b = make_tuple(-1, -1);}
-	if (f == 5 && s == 2) {a = make_tuple(1, 8); b = make_tuple(0, 6);}
-	if (f == 5 && s == 3) {a = make_tuple(2, 7); b = make_tuple(-1, -1);}
-	if (f == 5 && s == 5) {a = make_tuple(0, 7); b = make_tuple(-1, -1);}
-	if (f == 5 && s == 6) {a = make_tuple(2, 6); b = make_tuple(3, 8);}
-	if (f == 5 && s == 7) {a = make_tuple(3, 7); b = make_tuple(-1, -1);}
-	if (f == 5 && s == 8) {a = make_tuple(3, 6); b = make_tuple(0, 8);}
+	if (f == 5 && s == 2) {a = make_tuple(1, 8); b = make_tuple(4, 6);}
+	if (f == 5 && s == 3) {a = make_tuple(3, 1); b = make_tuple(-1, -1);}
+	if (f == 5 && s == 5) {a = make_tuple(4, 5); b = make_tuple(-1, -1);}
+	if (f == 5 && s == 6) {a = make_tuple(2, 0 ); b = make_tuple(3, 0);}
+	if (f == 5 && s == 7) {a = make_tuple(2, 1); b = make_tuple(-1, -1);}
+	if (f == 5 && s == 8) {a = make_tuple(2, 2); b = make_tuple(4, 2);}
 	tuple<tuple<int,int>, tuple<int,int>> neighbor(a,b);
 	return neighbor;
 }

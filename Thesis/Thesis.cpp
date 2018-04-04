@@ -97,9 +97,9 @@ int main()
 	vector<Scalar> f = { G , Y , O , W , Y , O , cB , G , O};
 	vector<Scalar> l = { W , O , cB , cB , cR , cB , G , cR , cR };
 	vector<Scalar> r = { cR , G , cR , cR , O , cR , cR , cR , W };
-	vector<Scalar> u = { Y , cB , W , G , cB , O , O , O ,O };
+	vector<Scalar> u = { Y , cB , W , G , cB , O , O , O , O };
 	vector<Scalar> d = { G , G , cB , Y , G , cB , Y , Y , cB };
-	vector<Scalar> b = { Y , W , Y , W , W , W , G , Y , W };
+	vector<Scalar> b = { Y , W , Y , W , W , W , G , Y , G };
 	
 	SimpleFace F(f), L(l), R(r), U(u), D(d), B(b);
 	//
@@ -281,13 +281,7 @@ int main()
 								cout << "wrong face" << endl;
 								newface = false;
 							}
-							else
-							{
-								for (size_t i = 0; i < face.size(); ++i)
-								{
-									cout << face[i] << endl;
-								}
-							}
+							
 						}
 						if (newface)
 						{
@@ -304,13 +298,27 @@ int main()
 
 			vector<SimpleFace> samplefaces;
 			samplefaces = { F, L, R, U, D, B };
+			vector<vector<Scalar>> prntcols;
 			Cube cube;
-			//if (faces.size() == 6 && unassigned)
-			if (unassigned)
+			if (faces.size() == 6 && unassigned)
+			//if (unassigned)
 			{
-				cube = ProcessColors(samplefaces);
+				for (size_t j = 0; j < faces.size(); ++j)
+				{
+					prntcols.push_back(faces[j].getColors());
+				}
+				for (size_t j = 0; j < prntcols.size(); ++j)
+				{
+					cout << j << endl;
+					for (size_t i = 0; i < prntcols[j].size(); ++i)
+					{
+						cout << prntcols[j][i] << endl;
+					}
+				}
+				cube = ProcessColors(faces);
 				cube.printFaces();
 				unassigned = false;
+				
 			}
 			imshow("Video", src);
 			imshow("Canny", dst);

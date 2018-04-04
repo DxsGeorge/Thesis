@@ -120,3 +120,4 @@ public:
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s);
 
 Scalar colavg(Mat src, Point2f point, float dist);
+

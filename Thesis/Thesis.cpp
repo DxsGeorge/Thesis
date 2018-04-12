@@ -11,10 +11,14 @@
 #include "Sticker.h"
 #include "Hough_Transform.h"
 #include "lk-tracking.h"
-#include "Input.h"
+
 #include <iostream>
 #include <string>
 #include <Windows.h>
+
+
+//#include "Input.hpp"
+
 
 using namespace cv;
 using namespace std;
@@ -299,13 +303,13 @@ int main()
 			vector<SimpleFace> samplefaces;
 			samplefaces = { F, L, R, U, D, B };
 			vector<vector<Scalar>> prntcols;
-			Cube cube;
-			if (faces.size() == 6 && unassigned)
-			//if (unassigned)
+			MyCube cube;
+			//if (faces.size() == 6 && unassigned)
+			if (unassigned)
 			{
-				for (size_t j = 0; j < faces.size(); ++j)
+				for (size_t j = 0; j < samplefaces.size(); ++j)
 				{
-					prntcols.push_back(faces[j].getColors());
+					prntcols.push_back(samplefaces[j].getColors());
 				}
 				for (size_t j = 0; j < prntcols.size(); ++j)
 				{
@@ -315,7 +319,8 @@ int main()
 						cout << prntcols[j][i] << endl;
 					}
 				}
-				cube = ProcessColors(faces);
+				cube = ProcessColors(samplefaces);
+				cube.centerToColor();
 				cube.printFaces();
 				unassigned = false;
 				

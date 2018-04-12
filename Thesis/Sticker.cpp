@@ -179,12 +179,27 @@ MatchedFace::MatchedFace(vector<int> color)
 	this->colors = color;
 }
 
-Cube::Cube()
+
+bool ScalarCompareH(const Scalar& a, const Scalar& b)
+{
+	return a[0] < b[0];
+}
+
+
+
+bool ScalarEqual(const tuple<Scalar, char>& a, const tuple<Scalar, char>& b)
+{
+	int col1 = get<0>(a)[0];
+	int col2 = get<0>(b)[0];
+	return col1==col2;
+}
+
+MyCube::MyCube()
 {
 
 }
 
-Cube::Cube(vector<MatchedFace> faces)
+MyCube::MyCube(vector<MatchedFace> faces)
 {
 	if (faces.size() != 6) cout << "too many faces" << endl;
 	this->F = faces[0];
@@ -194,11 +209,10 @@ Cube::Cube(vector<MatchedFace> faces)
 	this->D = faces[4];
 	this->B = faces[5];
 	this->faces = { this->F, this->L, this->R, this->U, this->D, this->B };
-	//this->ColToCenters();
-	//this->NumToColors();
+
 }
 
-void Cube::printFaces()
+void MyCube::printFaces()
 {
 	cout << "F: " << endl;
 	cout << "| " << this->F.colors[0] << " | " << F.colors[3] << " | " << F.colors[6] << " |" << endl;
@@ -231,47 +245,50 @@ void Cube::printFaces()
 	cout << "| " << this->B.colors[2] << " | " << B.colors[5] << " | " << B.colors[8] << " |" << endl;
 }
 
-bool ScalarCompareH(const Scalar& a, const Scalar& b)
-{
-	return a[0] < b[0];
+void MyCube::centerToColor()
+{	
+	vector<Scalar> centers,centers2;
+	for (size_t i = 0; i < this->faces.size(); ++i)
+	{
+		centers.push_back(this->faces[i].colors[4]);
+		centers2.push_back(this->faces[i].colors[4]);
+	}
+	sort(centers.begin(), centers.end(), ScalarCompareH);
+	for (size_t i = 0; i < centers.size(); ++i)
+	{
+		if (centers[i][1] < 100) rotate(centers.begin(), centers.begin() + i, centers.end());
+	}
+	vector<tuple<Scalar, char>> colcenters;
+	colcenters.push_back(make_tuple(centers[0], 'R'));
+	colcenters.push_back(make_tuple(centers[1], 'O'));
+	colcenters.push_back(make_tuple(centers[2], 'Y'));
+	colcenters.push_back(make_tuple(centers[3], 'G'));
+	colcenters.push_back(make_tuple(centers[4], 'B'));
+	colcenters.push_back(make_tuple(centers[5], 'W'));
+	for (size_t i = 0; i < centers.size(); ++i)
+	{
+		auto it = find_if(colcenters.begin(), colcenters.end(), [&] (const tuple<Scalar, char>& e) {
+			return get<0>(e) == centers[i];
+		});
+		if (centers2[i][0] == centers[i][0])
+		{
+			this->centercolors.push_back(tuple<Scalar, char>(centers2[i], get<1>(*it)));
+		}
+	}
 }
+
+void MyCube::numToColor()
+{
+
+}
+
 
 ColorFace::ColorFace()
 {
 
 }
 
-void Cube::ColToCenters()
-{
-	vector<int> centers;
-	centers = { this->F.colors[4], this->L.colors[4], this->R.colors[4], this->U.colors[4], this->D.colors[4], this->B.colors[4] };
-	
-	for (size_t i = 0; i < 6; ++i)
-	{
-		if (centers[i] < 100)
-		{
-			int temp = centers[6];
-			centers[6] = centers[i];
-			centers[i] = temp;
-		}
-	}
-	sort(centers.begin(), centers.end()-1, ScalarCompareH);
-	for (size_t i = 0; i < 6; ++i)
-	{
-		if (this->faces[i].colors[0] == centers[0]) this->colors_c[i] = 'R';
-		else if (this->faces[i].colors[0] == centers[1]) this->colors_c[i] = 'O';
-		else if (this->faces[i].colors[0] == centers[2]) this->colors_c[i] = 'Y';
-		else if (this->faces[i].colors[0] == centers[3]) this->colors_c[i] = 'G';
-		else if (this->faces[i].colors[0] == centers[4]) this->colors_c[i] = 'B';
-		else if (this->faces[i].colors[0] == centers[5]) this->colors_c[i] = 'W';
-	}
 
-}
-
-void Cube::NumToColors()
-{
-
-}
 
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s)
 {
@@ -333,6 +350,8 @@ tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s)
 	tuple<tuple<int,int>, tuple<int,int>> neighbor(a,b);
 	return neighbor;
 }
+
+
 
 Scalar colavg(Mat src, Point2f point, float dist)
 {

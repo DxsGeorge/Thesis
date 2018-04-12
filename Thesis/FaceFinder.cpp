@@ -867,7 +867,7 @@ float ptdst(Scalar a, Scalar b)
 	return sqrt((a[0] - b[0])*(a[0] - b[0]) + (a[1] - b[1])*(a[1] - b[1]));
 }
 
-Cube ProcessColors(vector<SimpleFace> faces)
+MyCube ProcessColors(vector<SimpleFace> faces)
 {
 	vector<MatchedFace> correctedfaces;
 	int bestj = 0;
@@ -998,7 +998,7 @@ Cube ProcessColors(vector<SimpleFace> faces)
 		}
 		correctedfaces.push_back(MatchedFace(corrface));
 	}
-	Cube cube(correctedfaces);
+	MyCube cube(correctedfaces);
 	return cube;
 }
 

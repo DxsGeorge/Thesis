@@ -91,7 +91,7 @@ public:
 	ColorFace(vector<char>);
 };
 
-class Cube
+class MyCube
 {
 public:
 	MatchedFace F; //front
@@ -101,20 +101,14 @@ public:
 	MatchedFace D; //down
 	MatchedFace B; //back
 
-	ColorFace cF; //same
-	ColorFace cR;
-	ColorFace cL;
-	ColorFace cU;
-	ColorFace cD;
-	ColorFace cB;
 
-	Cube();
-	Cube(vector<MatchedFace> faces);
+	MyCube();
+	MyCube(vector<MatchedFace> faces);
 	vector<MatchedFace> faces;
-	vector<char> colors_c;
+	vector < tuple<Scalar, char>> centercolors;
 	void printFaces();
-	void ColToCenters();
-	void NumToColors();
+	void centerToColor();
+	void numToColor();
 };
 
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s);

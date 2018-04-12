@@ -80,4 +80,4 @@ float ptdstw2(Scalar a, Scalar b);
 
 float ptdst(Scalar a, Scalar b);
 
-Cube ProcessColors(vector<SimpleFace> faces);
+MyCube ProcessColors(vector<SimpleFace> faces);

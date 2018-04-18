@@ -17,7 +17,7 @@
 #include <Windows.h>
 
 
-//#include "Input.hpp"
+#include "Input.hpp"
 
 
 using namespace cv;
@@ -47,6 +47,7 @@ int main()
 	int tracking = 0;
 	int count = 0;
 	bool colorextract = false;
+	bool parsedsolution = false;
 
 	int assigned[6][9] = {};
 	for (int i = 0; i < 6; ++i)
@@ -91,19 +92,19 @@ int main()
 
 	//sample cube colors for test
 
-	Scalar cR = Scalar(8, 190, 100);
+	Scalar CR = Scalar(8, 190, 100);
 	Scalar O = Scalar(13, 190, 100);
 	Scalar Y = Scalar(30, 195, 100);
 	Scalar G = Scalar(70, 195, 100);
-	Scalar cB = Scalar(120, 195, 100);
+	Scalar CB = Scalar(120, 195, 100);
 	Scalar W = Scalar(37, 20, 200);
 
-	vector<Scalar> f = { G , Y , O , W , Y , O , cB , G , O};
-	vector<Scalar> l = { W , O , cB , cB , cR , cB , G , cR , cR };
-	vector<Scalar> r = { cR , G , cR , cR , O , cR , cR , cR , W };
-	vector<Scalar> u = { Y , cB , W , G , cB , O , O , O , O };
-	vector<Scalar> d = { G , G , cB , Y , G , cB , Y , Y , cB };
-	vector<Scalar> b = { Y , W , Y , W , W , W , G , Y , G };
+	vector<Scalar> f = { Y , Y , W , Y , CB , CR , O , W , CR };
+	vector<Scalar> l = { G , CR , Y , W , CR , G , CB , CR , CB };
+	vector<Scalar> r = { CB , G , W , CB , O , CB , CR , O , O };
+	vector<Scalar> u = { O , CB , CR , Y , Y , CB , G , CR , W };
+	vector<Scalar> d = { CR , Y , O , G , W , W , G , O , G };
+	vector<Scalar> b = { Y , G , Y , O , G , O , W , W , CB };
 	
 	SimpleFace F(f), L(l), R(r), U(u), D(d), B(b);
 	//
@@ -326,6 +327,28 @@ int main()
 				unassigned = false;
 				
 			}
+			vector<string> cube_set = { "F:", "L:", "R:", "U:", "D:", "B:" };
+			//if (faces.size() == 6 && !parsedsolution)
+			if (!parsedsolution)
+			{
+				
+				for (auto it = cube.facecolors_char.begin(); it != cube.facecolors_char.end(); ++it)
+				{
+					cube_set[it - cube.facecolors_char.begin()] += 
+						string () + (*it)[0] + (*it)[1] + (*it)[2] + (*it)[3] + (*it)[4] + (*it)[5] + (*it)[6] + (*it)[7] + (*it)[8];
+				}
+				string temp_swap;
+				temp_swap = cube_set[0];
+				cube_set[0] = cube_set[3];
+				cube_set[3] = cube_set[5];
+				cube_set[5] = cube_set[2];
+				cube_set[2] = temp_swap;
+				swap(cube_set[1], cube_set[4]);
+				string solution = Input(cube_set);
+				cout << solution << endl;
+				parsedsolution = true;
+			}
+			
 			imshow("Video", src);
 			imshow("Canny", dst);
 			//imshow("HSV", hsv);

@@ -298,8 +298,11 @@ void MyCube::numToColor()
 		vector<char> oneface_char;
 		for (auto it2 = face.begin(); it2 != face.end(); ++it2)
 		{
-			oneface_char.push_back(get<1>(this->centercolors[*it2]));
+			oneface_char.push_back(get<1>(this->centercolors.at(*it2)));
 		}
+		swap(oneface_char[1], oneface_char[3]);
+		swap(oneface_char[2], oneface_char[6]);
+		swap(oneface_char[5], oneface_char[7]);
 		this->facecolors_char.push_back(oneface_char);
 	}
 }
@@ -325,23 +328,23 @@ tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s)
 	if (f == 0 && s == 7) { a = make_tuple( 1, 1 ); b = make_tuple( -1, -1 );}
 	if (f == 0 && s == 8) { a = make_tuple( 1, 2 ); b = make_tuple( 4, 6 );}
 
-	if (f == 1 && s == 0) { a = make_tuple( 0, 6 ); b = make_tuple( 3, 8 );}
-	if (f == 1 && s == 1) { a = make_tuple( 0, 7 ); b = make_tuple( -1, -1 );}
-	if (f == 1 && s == 2) { a = make_tuple( 0, 8 ); b = make_tuple( 4, 6 );}
-	if (f == 1 && s == 3) { a = make_tuple( 3, 7 ); b = make_tuple( -1, -1 );}
-	if (f == 1 && s == 5) { a = make_tuple( 4, 7 ); b = make_tuple( -1, -1 );}
-	if (f == 1 && s == 6) { a = make_tuple( 3, 6 ); b = make_tuple( 5, 0 );}
-	if (f == 1 && s == 7) { a = make_tuple( 5, 1 ); b = make_tuple(-1, -1);}
-	if (f == 1 && s == 8) { a = make_tuple( 4, 8 ); b = make_tuple(5, 2);}
+	if (f == 2 && s == 0) { a = make_tuple( 0, 6 ); b = make_tuple( 3, 8 );}
+	if (f == 2 && s == 1) { a = make_tuple( 0, 7 ); b = make_tuple( -1, -1 );}
+	if (f == 2 && s == 2) { a = make_tuple( 0, 8 ); b = make_tuple( 4, 6 );}
+	if (f == 2 && s == 3) { a = make_tuple( 3, 7 ); b = make_tuple( -1, -1 );}
+	if (f == 2 && s == 5) { a = make_tuple( 4, 7 ); b = make_tuple( -1, -1 );}
+	if (f == 2 && s == 6) { a = make_tuple( 3, 6 ); b = make_tuple( 5, 0 );}
+	if (f == 2 && s == 7) { a = make_tuple( 5, 1 ); b = make_tuple(-1, -1);}
+	if (f == 2 && s == 8) { a = make_tuple( 4, 8 ); b = make_tuple(5, 2);}
 
-	if (f == 2 && s == 0) { a = make_tuple(3, 0); b = make_tuple(5, 6);}
-	if (f == 2 && s == 1) { a = make_tuple(5, 7); b = make_tuple(-1, -1);}
-	if (f == 2 && s == 2) { a = make_tuple(4, 2); b = make_tuple(5, 8);}
-	if (f == 2 && s == 3) { a = make_tuple(3, 1); b = make_tuple(-1, -1);}
-	if (f == 2 && s == 5) { a = make_tuple(4, 1); b = make_tuple(-1, -1);}
-	if (f == 2 && s == 6) { a = make_tuple(0, 0); b = make_tuple(3, 2);}
-	if (f == 2 && s == 7) { a = make_tuple(0, 1); b = make_tuple(-1, -1);}
-	if (f == 2 && s == 8) { a = make_tuple(0, 2); b = make_tuple(4, 0);}
+	if (f == 1 && s == 0) { a = make_tuple(3, 0); b = make_tuple(5, 6);}
+	if (f == 1 && s == 1) { a = make_tuple(5, 7); b = make_tuple(-1, -1);}
+	if (f == 1 && s == 2) { a = make_tuple(4, 2); b = make_tuple(5, 8);}
+	if (f == 1 && s == 3) { a = make_tuple(3, 1); b = make_tuple(-1, -1);}
+	if (f == 1 && s == 5) { a = make_tuple(4, 1); b = make_tuple(-1, -1);}
+	if (f == 1 && s == 6) { a = make_tuple(0, 0); b = make_tuple(3, 2);}
+	if (f == 1 && s == 7) { a = make_tuple(0, 1); b = make_tuple(-1, -1);}
+	if (f == 1 && s == 8) { a = make_tuple(0, 2); b = make_tuple(4, 0);}
 
 	if (f == 3 && s == 0) {a = make_tuple(2, 0); b = make_tuple(5, 6);}
 	if (f == 3 && s == 1) {a = make_tuple(2, 3); b = make_tuple(-1, -1);}
@@ -359,7 +362,7 @@ tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s)
 	if (f == 4 && s == 5) {a = make_tuple(5, 5); b = make_tuple(-1, -1);}
 	if (f == 4 && s == 6) {a = make_tuple(0, 8); b = make_tuple(1, 2);}
 	if (f == 4 && s == 7) {a = make_tuple(1, 5); b = make_tuple(-1, -1);}
-	if (f == 4 && s == 8) {a = make_tuple(1, 8); b = make_tuple(5, 8);}
+	if (f == 4 && s == 8) {a = make_tuple(1, 8); b = make_tuple(5, 2);}
 
 	if (f == 5 && s == 0) {a = make_tuple(3, 2); b = make_tuple(1, 6);}
 	if (f == 5 && s == 1) {a = make_tuple(1, 7); b = make_tuple(-1, -1);}

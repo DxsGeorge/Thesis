@@ -107,7 +107,8 @@ public:
 	MyCube(vector<MatchedFace> faces, vector<SimpleFace> colorfaces);
 	MyCube(vector<SimpleFace> colorfaces);
 	vector<MatchedFace> faces;
-	vector < tuple<Scalar, char>> centercolors;
+	vector <tuple<Scalar, char>> centercolors;
+	vector<vector<char>> facecolors_char;
 	void printFaces();
 	void centerToColor();
 	void numToColor();

@@ -321,6 +321,7 @@ int main()
 				}
 				cube = ProcessColors(samplefaces);
 				cube.centerToColor();
+				cube.numToColor();
 				cube.printFaces();
 				unassigned = false;
 				

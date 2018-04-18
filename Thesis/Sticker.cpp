@@ -292,7 +292,16 @@ void MyCube::centerToColor()
 
 void MyCube::numToColor()
 {
-
+	for (auto it = this->faces.begin(); it != this->faces.end(); ++it)
+	{
+		vector<int> face = it->colors;
+		vector<char> oneface_char;
+		for (auto it2 = face.begin(); it2 != face.end(); ++it2)
+		{
+			oneface_char.push_back(get<1>(this->centercolors[*it2]));
+		}
+		this->facecolors_char.push_back(oneface_char);
+	}
 }
 
 

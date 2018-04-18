@@ -199,7 +199,7 @@ MyCube::MyCube()
 
 }
 
-MyCube::MyCube(vector<MatchedFace> faces)
+MyCube::MyCube(vector<MatchedFace> faces, vector<SimpleFace> colorfaces)
 {
 	if (faces.size() != 6) cout << "too many faces" << endl;
 	this->F = faces[0];
@@ -210,6 +210,13 @@ MyCube::MyCube(vector<MatchedFace> faces)
 	this->B = faces[5];
 	this->faces = { this->F, this->L, this->R, this->U, this->D, this->B };
 
+	this->colfaces = colorfaces;
+
+}
+
+MyCube::MyCube(vector<SimpleFace> colorfaces)
+{
+	this->colfaces = colorfaces;
 }
 
 void MyCube::printFaces()
@@ -248,15 +255,16 @@ void MyCube::printFaces()
 void MyCube::centerToColor()
 {	
 	vector<Scalar> centers,centers2;
-	for (size_t i = 0; i < this->faces.size(); ++i)
+	for (size_t i = 0; i < this->colfaces.size(); ++i)
 	{
-		centers.push_back(this->faces[i].colors[4]);
-		centers2.push_back(this->faces[i].colors[4]);
+		centers.push_back(this->colfaces[i].getCenter()); //sort by H value
+		centers2.push_back(this->colfaces[i].getCenter()); //original cube set
 	}
 	sort(centers.begin(), centers.end(), ScalarCompareH);
-	for (size_t i = 0; i < centers.size(); ++i)
+	for (auto it = centers.begin(); it != centers.end(); ++it)
 	{
-		if (centers[i][1] < 100) rotate(centers.begin(), centers.begin() + i, centers.end());
+		Scalar color = *it;
+		if (color[1] < 100) rotate(it,it+1,centers.end());
 	}
 	vector<tuple<Scalar, char>> colcenters;
 	colcenters.push_back(make_tuple(centers[0], 'R'));
@@ -265,14 +273,19 @@ void MyCube::centerToColor()
 	colcenters.push_back(make_tuple(centers[3], 'G'));
 	colcenters.push_back(make_tuple(centers[4], 'B'));
 	colcenters.push_back(make_tuple(centers[5], 'W'));
-	for (size_t i = 0; i < centers.size(); ++i)
+	for (auto it2 = centers2.begin(); it2 != centers2.end(); ++it2)
 	{
-		auto it = find_if(colcenters.begin(), colcenters.end(), [&] (const tuple<Scalar, char>& e) {
-			return get<0>(e) == centers[i];
-		});
-		if (centers2[i][0] == centers[i][0])
+		for (auto it = centers.begin(); it != centers.end(); ++it)
 		{
-			this->centercolors.push_back(tuple<Scalar, char>(centers2[i], get<1>(*it)));
+			Scalar col1 = *it;
+			Scalar col2 = *it2;
+			auto it3 = find_if(colcenters.begin(), colcenters.end(), [&](const tuple<Scalar, char>& e) {
+				return get<0>(e) == *it2;
+			});
+			if (abs(col1[0] - col2[0])  < 0.1)
+			{
+				this->centercolors.push_back(tuple<Scalar, char>(*it2, get<1>(*it3)));
+			}
 		}
 	}
 }

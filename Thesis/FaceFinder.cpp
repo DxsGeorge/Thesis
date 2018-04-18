@@ -998,7 +998,7 @@ MyCube ProcessColors(vector<SimpleFace> faces)
 		}
 		correctedfaces.push_back(MatchedFace(corrface));
 	}
-	MyCube cube(correctedfaces);
+	MyCube cube(correctedfaces,faces);
 	return cube;
 }
 

@@ -303,7 +303,7 @@ int main()
 			vector<SimpleFace> samplefaces;
 			samplefaces = { F, L, R, U, D, B };
 			vector<vector<Scalar>> prntcols;
-			MyCube cube;
+			MyCube cube(samplefaces);
 			//if (faces.size() == 6 && unassigned)
 			if (unassigned)
 			{

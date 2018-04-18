@@ -101,9 +101,11 @@ public:
 	MatchedFace D; //down
 	MatchedFace B; //back
 
+	vector<SimpleFace> colfaces;
 
 	MyCube();
-	MyCube(vector<MatchedFace> faces);
+	MyCube(vector<MatchedFace> faces, vector<SimpleFace> colorfaces);
+	MyCube(vector<SimpleFace> colorfaces);
 	vector<MatchedFace> faces;
 	vector < tuple<Scalar, char>> centercolors;
 	void printFaces();

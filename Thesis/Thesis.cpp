@@ -48,6 +48,11 @@ int main()
 	int count = 0;
 	bool colorextract = false;
 	bool parsedsolution = false;
+	int solution_iterator=0;
+	string solution;
+	vector<string> steps;
+	bool finished = false;
+	MyCube cube;
 
 	int assigned[6][9] = {};
 	for (int i = 0; i < 6; ++i)
@@ -99,12 +104,12 @@ int main()
 	Scalar CB = Scalar(120, 195, 100);
 	Scalar W = Scalar(37, 20, 200);
 
-	vector<Scalar> f = { Y , Y , W , Y , CB , CR , O , W , CR };
-	vector<Scalar> l = { G , CR , Y , W , CR , G , CB , CR , CB };
-	vector<Scalar> r = { CB , G , W , CB , O , CB , CR , O , O };
-	vector<Scalar> u = { O , CB , CR , Y , Y , CB , G , CR , W };
-	vector<Scalar> d = { CR , Y , O , G , W , W , G , O , G };
-	vector<Scalar> b = { Y , G , Y , O , G , O , W , W , CB };
+	vector<Scalar> f = { O, CR, CB, Y, O, W, O, W, O };
+	vector<Scalar> l = { CB, CR, CB, O, CB, CR, CR, O, G };
+	vector<Scalar> r = { W, W, CB, CB, G, Y, G, Y, CR };
+	vector<Scalar> u = { CR, W, W, G, W, G, G, CB, W };
+	vector<Scalar> d = { W, CB, CR, O, Y, O, Y, CB, Y };
+	vector<Scalar> b = { Y, Y, O, CR, CR, G, G, G, Y };
 	
 	SimpleFace F(f), L(l), R(r), U(u), D(d), B(b);
 	//
@@ -304,13 +309,14 @@ int main()
 			vector<SimpleFace> samplefaces;
 			samplefaces = { F, L, R, U, D, B };
 			vector<vector<Scalar>> prntcols;
-			MyCube cube(samplefaces);
-			//if (faces.size() == 6 && unassigned)
-			if (unassigned)
+			
+			if (faces.size() == 6 && unassigned)
+			//if (unassigned)
 			{
-				for (size_t j = 0; j < samplefaces.size(); ++j)
+				cube = MyCube(faces);
+				for (size_t j = 0; j < faces.size(); ++j)
 				{
-					prntcols.push_back(samplefaces[j].getColors());
+					prntcols.push_back(faces[j].getColors());
 				}
 				for (size_t j = 0; j < prntcols.size(); ++j)
 				{
@@ -320,16 +326,19 @@ int main()
 						cout << prntcols[j][i] << endl;
 					}
 				}
-				cube = ProcessColors(samplefaces);
+				cube = ProcessColors(faces);
 				cube.centerToColor();
 				cube.numToColor();
-				cube.printFaces();
+				cube.printCubeCharacters();
 				unassigned = false;
 				
 			}
-			vector<string> cube_set = { "F:", "L:", "R:", "U:", "D:", "B:" };
-			//if (faces.size() == 6 && !parsedsolution)
-			if (!parsedsolution)
+			vector<string> cube_set = { "F:", "R:", "L:", "U:", "D:", "B:" };
+			
+			
+			
+			if (faces.size() == 6 && !parsedsolution)
+			//if (!parsedsolution)
 			{
 				
 				for (auto it = cube.facecolors_char.begin(); it != cube.facecolors_char.end(); ++it)
@@ -337,16 +346,30 @@ int main()
 					cube_set[it - cube.facecolors_char.begin()] += 
 						string () + (*it)[0] + (*it)[1] + (*it)[2] + (*it)[3] + (*it)[4] + (*it)[5] + (*it)[6] + (*it)[7] + (*it)[8];
 				}
-				string temp_swap;
-				temp_swap = cube_set[0];
-				cube_set[0] = cube_set[3];
-				cube_set[3] = cube_set[5];
-				cube_set[5] = cube_set[2];
-				cube_set[2] = temp_swap;
-				swap(cube_set[1], cube_set[4]);
-				string solution = Input(cube_set);
+				solution = Input(cube_set);
 				cout << solution << endl;
+				istringstream iss(solution);
+				copy(istream_iterator<string>(iss),
+					istream_iterator<string>(),
+					back_inserter(steps));
 				parsedsolution = true;
+			}
+
+			if (parsedsolution) //phase of showing solution on screen
+			{
+				
+				if (solution_iterator < steps.size() && solution != "error")
+				{
+					cout << steps[solution_iterator] << endl;
+					int stepface = StepFace(steps[solution_iterator]);
+					//ShowStep(steps[solution_iterator], stepface, src, cube); //todo fit step to cube face
+					StepShower(cube, steps[solution_iterator],src);
+				}
+				else if ((solution_iterator >= steps.size()) && (!finished))
+				{
+					cout << "Bye" << endl;
+					finished = true;
+				}
 			}
 			
 			imshow("Video", src);
@@ -364,8 +387,11 @@ int main()
 		{	
 			cout << "faces cleared" << endl;
 			faces.clear();
+			parsedsolution = false;
+			finished = false;
 		}
 		if (c == ' ') colorextract = true;
+		if (c == 'n' || c == 'N') solution_iterator++;
 		//Sleep(33);
 	}
 }

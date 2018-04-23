@@ -647,3 +647,6 @@ vector<Point2f> pointcube(Point2f a, float dist)
 	cube = { ul, um, ur, ml, mm, mr, bl, bm, br };
 	return cube;
 }
+
+
+

@@ -843,10 +843,10 @@ int MatchToCenter(vector<Scalar> centers, Scalar color)
 float ptdstw(Scalar a, Scalar b)
 {
 	float dist;
-	if (a(1) < 100 || b(1) < 100)
+	if (a(1) < 50 || b(1) < 50)
 	{
 		dist = 1000;
-		if (a(1) < 100 && b(1) < 100)
+		if (a(1) < 50 && b(1) < 50)
 		{
 			dist = abs(a(1) - b(1));
 		}	
@@ -1002,3 +1002,198 @@ MyCube ProcessColors(vector<SimpleFace> faces)
 	return cube;
 }
 
+void FindFaceStep(int step, MyCube cube)
+{
+	for (auto it = cube.centercolors.begin(); it != cube.centercolors.end(); ++it)
+	{
+
+	}
+}
+
+int StepFace(string step)
+{
+	if (step.at(0) == 'F') return 0;
+	else if (step.at(0) == 'L') return 1;
+	else if (step.at(0) == 'R') return 2;
+	else if (step.at(0) == 'U') return 3;
+	else if (step.at(0) == 'D') return 4;
+	else if (step.at(0) == 'B') return 5;
+}
+
+void ShowStep(string step_char, int step, Mat img, MyCube cube)
+{
+	FindFaceStep(step, cube);
+}
+
+
+void DrawCubeGrid(int img_w, int img_h, Mat img)
+{
+	
+
+	Scalar black = Scalar{ 0, 0, 0 };
+	Point a1 = Point(0.7 * img_w, 0.2 * img_h);
+	Point a2 = Point(0.9 * img_w, 0.2 * img_h);
+	Point a3 = Point(0.9 * img_w, 0.4 * img_h);
+	Point a4 = Point(0.7 * img_w, 0.4 * img_h);
+
+	line(img, a1, a2, Scalar(0, 0, 0));
+	line(img, a2, a3, Scalar(0, 0, 0));
+	line(img, a3, a4, Scalar(0, 0, 0));
+	line(img, a4, a1, Scalar(0, 0, 0));
+
+	Point m1 = Point(0.766*img_w, 0.2*img_h);
+	Point m2 = Point(0.766*img_w, 0.4*img_h);
+	line(img, m1, m2, black);
+
+	Point m3 = Point(0.833*img_w, 0.2*img_h);
+	Point m4 = Point(0.833*img_w, 0.4*img_h);
+	line(img, m3, m4, black);
+
+	Point m5 = Point(0.7*img_w, 0.266*img_h);
+	Point m6 = Point(0.9*img_w, 0.266 * img_h);
+	line(img, m5, m6, black);
+
+	Point m7 = Point(0.7*img_w, 0.333*img_h);
+	Point m8 = Point(0.9*img_w, 0.333*img_h);
+	line(img, m7, m8, black);
+
+}
+
+
+void DrawArrow(Mat img, int img_w, int img_h, int count, bool cw)
+{
+	Point c = Point(0.8 * img_w, 0.3 * img_h);
+	int radius = 0.15 * img_w;
+	int arr_rad = 10;
+
+	float c_ang1 = (85 * CV_PI) / 180.0;
+	float c_ang2 = (95 * CV_PI) / 180.0;
+
+	float c_ang3 = (265 * CV_PI) / 180.0;
+	float c_ang4 = (275 * CV_PI) / 180.0;
+
+	float ang1 = (45 * CV_PI) / 180.0;
+	float ang2 = (315 * CV_PI) / 180.0;
+
+	float ang3 = (135 * CV_PI) / 180.0;
+	float ang4 = (225 * CV_PI) / 180.0;
+
+	Point a1 = Point(c.x + (radius * cos(c_ang1)), c.y + (radius * sin(c_ang1)));
+	Point a2 = Point(c.x + (radius * cos(c_ang2)), c.y + (radius * sin(c_ang2)));
+
+	Point a3 = Point(c.x + (radius * cos(c_ang3)), c.y + (radius * sin(c_ang3)));
+	Point a4 = Point(c.x + (radius * cos(c_ang4)), c.y + (radius * sin(c_ang4)));
+
+	Point b1cw = Point(a1.x +arr_rad* cos(ang1), a1.y +arr_rad* sin(ang1));
+	Point b2cw = Point(a1.x +arr_rad* cos(ang2), a1.y +arr_rad* sin(ang2));
+	Point b1ccw = Point(a1.x +arr_rad* cos(ang3), a1.y +arr_rad* sin(ang3));
+	Point b2ccw = Point(a1.x +arr_rad* cos(ang4), a1.y +arr_rad* sin(ang4));
+
+	Point b3cw = Point(a2.x +arr_rad* cos(ang1), a2.y +arr_rad* sin(ang1));
+	Point b4cw = Point(a2.x +arr_rad* cos(ang2), a2.y +arr_rad* sin(ang2));
+	Point b3ccw = Point(a2.x +arr_rad* cos(ang3), a2.y +arr_rad* sin(ang3));
+	Point b4ccw = Point(a2.x +arr_rad* cos(ang4), a2.y +arr_rad* sin(ang4));
+
+	Point b5ccw = Point(a3.x +arr_rad* cos(ang1), a3.y +arr_rad* sin(ang1));
+	Point b6ccw = Point(a3.x +arr_rad* cos(ang2), a3.y +arr_rad* sin(ang2));
+	Point b5cw = Point(a3.x +arr_rad* cos(ang3), a3.y +arr_rad* sin(ang3));
+	Point b6cw = Point(a3.x +arr_rad* cos(ang4), a3.y +arr_rad* sin(ang4));
+
+	Point b7ccw = Point(a4.x +arr_rad* cos(ang1), a4.y +arr_rad* sin(ang1));
+	Point b8ccw = Point(a4.x +arr_rad* cos(ang2), a4.y +arr_rad* sin(ang2));
+	Point b7cw = Point(a4.x +arr_rad* cos(ang3), a4.y +arr_rad* sin(ang3));
+	Point b8cw = Point(a4.x +arr_rad* cos(ang4), a4.y +arr_rad* sin(ang4));
+
+	Scalar color = Scalar{ 0, 200, 0 };
+	
+	circle(img, c, 0.15 * img_w, color,2);
+
+	if (count == 2)
+	{
+		if (cw)
+		{
+			line(img, a1, b1cw, color, 2);
+			line(img, a1, b2cw, color, 2);
+			line(img, a2, b3cw, color, 2);
+			line(img, a2, b4cw, color, 2);
+			line(img, a3, b5cw, color, 2);
+			line(img, a3, b6cw, color, 2);
+			line(img, a4, b7cw, color, 2);
+			line(img, a4, b8cw, color, 2);
+		}
+		else
+		{
+			line(img, a1, b1ccw, color, 2);
+			line(img, a1, b2ccw, color, 2);
+			line(img, a2, b3ccw, color, 2);
+			line(img, a2, b4ccw, color, 2);
+			line(img, a3, b5ccw, color, 2);
+			line(img, a3, b6ccw, color, 2);
+			line(img, a4, b7ccw, color, 2);
+			line(img, a4, b8ccw, color, 2);
+		}
+	}
+	else
+	{
+		if (cw)
+		{
+			line(img, a1, b1cw, color, 2);
+			line(img, a1, b2cw, color, 2);
+			line(img, a3, b5cw, color, 2);
+			line(img, a3, b6cw, color, 2);
+		}
+		else
+		{
+			line(img, a1, b1ccw, color, 2);
+			line(img, a1, b2ccw, color, 2);
+			line(img, a3, b5ccw, color, 2);
+			line(img, a3, b6ccw, color, 2);
+		}
+	}
+}
+
+
+void StepShower(MyCube cube, string step, Mat &img)
+{
+
+	Scalar sticker_blue = { 255, 0, 0 };
+	Scalar sticker_red = { 0, 0, 255 };
+	Scalar sticker_green = { 0, 128, 0 };
+	Scalar sticker_yellow = { 0, 255, 255 };
+	Scalar sticker_orange = { 0, 100, 255 };
+	Scalar sticker_white = { 255, 255, 255 };
+
+	int count;
+	bool cw;
+	int int_step;
+	if (step[0] == 'F') int_step = 0;
+	else if (step[0] == 'L') int_step = 1;
+	else if (step[0] == 'R') int_step = 2;
+	else if (step[0] == 'U') int_step = 3;
+	else if (step[0] == 'D') int_step = 4;
+	else if (step[0] == 'B') int_step = 5;
+
+	if (step[1] == '2') count = 2;
+	else count = 1;
+
+	if (step[1] == '\'') cw = false;
+	else cw = true;
+
+	char step_color = cube.facecolors_char[int_step][4];
+
+	Scalar sticker_col;
+
+	if (step_color == 'R') sticker_col = sticker_red;
+	else if (step_color == 'O') sticker_col = sticker_orange;
+	else if (step_color == 'Y') sticker_col = sticker_yellow;
+	else if (step_color == 'G') sticker_col = sticker_green;
+	else if (step_color == 'B') sticker_col = sticker_blue;
+	else if (step_color == 'W') sticker_col = sticker_white;
+
+	rectangle(img, Point(0.766*img.cols, 0.266*img.rows), Point(0.833*img.cols, 0.333*img.rows), sticker_col, CV_FILLED);
+
+	DrawCubeGrid(img.cols, img.rows, img);
+
+	DrawArrow(img, img.cols, img.rows, count, cw);
+
+}

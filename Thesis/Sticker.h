@@ -112,6 +112,7 @@ public:
 	void printFaces();
 	void centerToColor();
 	void numToColor();
+	void printCubeCharacters();
 };
 
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s);

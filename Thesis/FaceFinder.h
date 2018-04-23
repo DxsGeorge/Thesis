@@ -81,3 +81,15 @@ float ptdstw2(Scalar a, Scalar b);
 float ptdst(Scalar a, Scalar b);
 
 MyCube ProcessColors(vector<SimpleFace> faces);
+
+void FindFaceStep(int step, MyCube cube);
+
+int StepFace(string step);
+
+void ShowStep(string step_char, int step, Mat img, MyCube cube);
+
+void DrawCubeGrid(int img_w, int img_h, Mat img);
+
+void DrawArrow(Mat img, int img_w, int img_h, int count, bool cw);
+
+void StepShower(MyCube cube, string step, Mat &img);

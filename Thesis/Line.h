@@ -127,3 +127,4 @@ bool isSquare2(Point p1[3], Point p2[3],float distance1, float distance2, float 
 bool PointsInLine(Point a, Point b, Point c);
 
 vector<Point2f> pointcube(Point2f a, float dist);
+

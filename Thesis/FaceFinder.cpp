@@ -799,8 +799,8 @@ float FaceCompare(SimpleFace a, SimpleFace b)
 	float sum = 0;
 	int count = 0;
 	vector<Scalar> a_vec, b_vec;
-	a_vec = a.getColors();
-	b_vec = b.getColors();
+	a_vec = a.getColorsHSV();
+	b_vec = b.getColorsHSV();
 	for (size_t i = 0; i < 9; ++i)
 	{
 		sum += ScalarCompare(a_vec[i], b_vec[i]);
@@ -814,8 +814,8 @@ float FaceCompareYUV(SimpleFace a, SimpleFace b)
 {
 	float sum = 0;
 	vector<Scalar> a_vec, b_vec;
-	a_vec = a.getColors();
-	b_vec = b.getColors();
+	a_vec = a.getColorsYUV();
+	b_vec = b.getColorsYUV();
 	for (size_t i = 0; i < 9; ++i)
 	{
 		sum += ScalarCompareYUV(a_vec[i], b_vec[i]);
@@ -843,10 +843,10 @@ int MatchToCenter(vector<Scalar> centers, Scalar color)
 float ptdstw(Scalar a, Scalar b)
 {
 	float dist;
-	if (a(1) < 50 || b(1) < 50)
+	if (a(1) < 100 || b(1) < 100)
 	{
 		dist = 1000;
-		if (a(1) < 50 && b(1) < 50)
+		if (a(1) < 100 && b(1) < 100)
 		{
 			dist = abs(a(1) - b(1));
 		}	
@@ -877,7 +877,7 @@ MyCube ProcessColors(vector<SimpleFace> faces)
 	int bestd = 10001;
 	int done = 0;
 	int taken[6] = { 0, 0, 0, 0, 0, 0 };
-	float dist;
+	float dist, dist1, dist2, dist3;
 	map<int, int> opposite;
 	opposite[0] = 5;
 	opposite[1] = 2;
@@ -918,7 +918,9 @@ MyCube ProcessColors(vector<SimpleFace> faces)
 		bool forced = false;
 		for (int j = 0; j < 6; ++j)
 		{
-			vector<Scalar> facecols = faces[j].getColors();
+			vector<Scalar> facecols = faces[j].getColorsHSV();
+			vector<Scalar> facecols1 = faces[j].getColorsYUV();
+			vector<Scalar> facecols2 = faces[j].getColorsRGB();
 			for (int i = 0; i < 9; ++i)
 			{
 				if ((i != 4) && (assigned[j][i] == -1) && (!forced))
@@ -928,8 +930,10 @@ MyCube ProcessColors(vector<SimpleFace> faces)
 					{
 						if (taken[k] < 8 && poss[make_tuple(j, i)][k] != -1)
 						{
-							dist = ptdstw(faces[k].getCenter(), facecols[i]);
-						
+							dist1 = ptdstw(faces[k].getCenterHSV(), facecols[i]);
+							dist2 = ptdst(faces[k].getCenterYUV(), facecols1[i]);
+							dist3 = ptdst(faces[k].getCenterRGB(), facecols2[i]);
+							dist = (dist1 + dist2 + dist3) / 3;
 							considered++;
 							if (dist < bestd)
 							{

@@ -153,20 +153,44 @@ SimpleFace::SimpleFace()
 	
 };
 
-SimpleFace::SimpleFace(vector<Scalar> face)
+SimpleFace::SimpleFace(vector<Scalar> face1, vector<Scalar> face2, vector<Scalar> face3)
 {
-	this->center = face[4];
-	this->colors = face;
+	this->centerHSV = face1[4];
+	this->colorsHSV = face1;
+	this->centerYUV = face2[4];
+	this->colorsYUV = face2;
+	this->centerRGB = face3[4];
+	this->colorsRGB = face3;
 };
 
-Scalar SimpleFace::getCenter()
+Scalar SimpleFace::getCenterHSV()
 {
-	return this->center;
+	return this->centerHSV;
 }
 
-vector<Scalar> SimpleFace::getColors()
+Scalar SimpleFace::getCenterYUV()
 {
-	return this->colors;
+	return this->centerYUV;
+}
+
+Scalar SimpleFace::getCenterRGB()
+{
+	return this->centerRGB;
+}
+
+vector<Scalar> SimpleFace::getColorsHSV()
+{
+	return this->colorsHSV;
+}
+
+vector<Scalar> SimpleFace::getColorsYUV()
+{
+	return this->colorsYUV;
+}
+
+vector<Scalar> SimpleFace::getColorsRGB()
+{
+	return this->colorsRGB;
 }
 
 MatchedFace::MatchedFace()
@@ -269,8 +293,8 @@ void MyCube::centerToColor()
 	vector<Scalar> centers,centers2;
 	for (size_t i = 0; i < this->colfaces.size(); ++i)
 	{
-		centers.push_back(this->colfaces[i].getCenter()); //sort by H value
-		centers2.push_back(this->colfaces[i].getCenter()); //original cube set
+		centers.push_back(this->colfaces[i].getCenterHSV()); //sort by H value
+		centers2.push_back(this->colfaces[i].getCenterHSV()); //original cube set
 	}
 	sort(centers.begin(), centers.end(), ScalarCompareH);
 	for (auto it = centers.begin(); it != centers.end(); ++it)

@@ -67,7 +67,7 @@ int main()
 		assigned[i][4] = i;
 	}
 
-	vector<Scalar> face;
+	vector<Scalar> face1, face2, face3;
 
 	//PnP initializers
 	Mat rvec, tvec;
@@ -111,7 +111,7 @@ int main()
 	vector<Scalar> d = { W, CB, CR, O, Y, O, Y, CB, Y };
 	vector<Scalar> b = { Y, Y, O, CR, CR, G, G, G, Y };
 	
-	SimpleFace F(f), L(l), R(r), U(u), D(d), B(b);
+	SimpleFace F(f,f,f), L(l,l,l), R(r,r,r), U(u,u,u), D(d,d,d), B(b,b,b);
 	//
 
 
@@ -268,12 +268,17 @@ int main()
 						{
 							//if (ep[i].x>rad && ep[i].x < src.cols / 2 - rad && ep[i].y>rad && ep[i].y < src.rows - rad)
 							{
-								Scalar col_avg;
+								Scalar col_avg1, col_avg2, col_avg3;
 								vector<Point2f> cubepoints = pointcube(ep[i], stickdist);
 								
-								Vec3b color = hsv.at<Vec3b>(ep[i]);
-								col_avg = colavg(hsv, ep[i], stickdist);
-								face.push_back(col_avg);
+								Vec3b color = yuv.at<Vec3b>(ep[i]);
+								col_avg1 = colavg(hsv, ep[i], stickdist);
+								col_avg2 = colavg(yuv, ep[i], stickdist);
+								col_avg3 = colavg(rgb, ep[i], stickdist);
+								vector<Scalar> col_avg = { col_avg1, col_avg2, col_avg3 };
+								face1.push_back(col_avg1);
+								face2.push_back(col_avg2);
+								face3.push_back(col_avg3);
 								for (size_t it = 0; it < cubepoints.size(); ++it)
 								{
 									circle(src, cubepoints[it], 2, Scalar(255, 255, 255), 1);
@@ -281,23 +286,25 @@ int main()
 							}
 						}
 						bool newface = true;
-						if (face.size() != 9) newface = false;
+						if (face1.size() != 9) newface = false;
 						for (size_t i = 0; i < faces.size() && newface; ++i)
 						{
-							//if (ScalarCompare(faces[i].getCenter(), face[4]) < 25.5)
-							//if (CompareOnlyH(faces[i].getCenter(), face[4]) < 25) 
-							if	(face.size() < 9 || FaceCompareYUV(faces[i], face) < 1.8)
+							//if (ScalarCompare(faces[i].getCenterHSV(), face1[4]) < 25.5)
+							//if (CompareOnlyH(faces[i].getCenterHSV(), face1[4]) < 25) 
+							/*if	(face2.size() < 9 || FaceCompareYUV(faces[i], face2) < 1.8)
 							{
 								cout << "wrong face" << endl;
 								newface = false;
 							}
-							
+							*/
 						}
 						if (newface)
 						{
-							faces.push_back(SimpleFace(face));
+							faces.push_back(SimpleFace(face1,face2,face3));
 						}
-						face.clear();
+						face1.clear();
+						face2.clear();
+						face3.clear();
 						cout << faces.size() << endl;
 						colorextract = false;
 					}
@@ -316,7 +323,7 @@ int main()
 				cube = MyCube(faces);
 				for (size_t j = 0; j < faces.size(); ++j)
 				{
-					prntcols.push_back(faces[j].getColors());
+					prntcols.push_back(faces[j].getColorsHSV());
 				}
 				for (size_t j = 0; j < prntcols.size(); ++j)
 				{

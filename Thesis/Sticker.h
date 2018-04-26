@@ -65,14 +65,22 @@ public:
 class SimpleFace
 {
 private:
-	Scalar center;
-	vector<Scalar> colors;
+	Scalar centerHSV;
+	Scalar centerYUV;
+	Scalar centerRGB;
+	vector<Scalar> colorsHSV;
+	vector<Scalar> colorsYUV;
+	vector<Scalar> colorsRGB;
 
 public:
 	SimpleFace();
-	SimpleFace(vector<Scalar> face);
-	Scalar getCenter();
-	vector<Scalar> getColors();
+	SimpleFace(vector<Scalar> face1, vector<Scalar> face2, vector<Scalar> face3);
+	Scalar getCenterHSV();
+	Scalar getCenterYUV();
+	Scalar getCenterRGB();
+	vector<Scalar> getColorsHSV();
+	vector<Scalar> getColorsYUV();
+	vector<Scalar> getColorsRGB();
 };
 
 class MatchedFace

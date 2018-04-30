@@ -36,7 +36,7 @@ int main()
 	Mat prev_dst;
 	Mat dst,sr1;
 	Mat gray, prev_gray;
-	Mat rgb, hsv, yuv;
+	Mat rgb, hsv, yuv, lab, gs;
 	vector<Point> points, pt, lastpt;
 	vector<KeyPoint> keypoints;
 	vector<Point2f> pointsf, pointsf_next;
@@ -120,6 +120,9 @@ int main()
 
 		Mat src;
 		cap >> src;
+		int gain = cap.get(CV_CAP_PROP_BRIGHTNESS);
+		cap.set(CV_CAP_PROP_BRIGHTNESS, -5);
+		//cout << "GAIN: " << gain << endl;
 		//src += Scalar(50, 50, 50);
 		if (!src.empty())
 		{
@@ -130,6 +133,8 @@ int main()
 			src.copyTo(rgb);
 			cvtColor(src, hsv, CV_BGR2HSV);
 			cvtColor(src, yuv, CV_BGR2YCrCb);
+			cvtColor(src, lab, CV_BGR2Lab);
+			cvtColor(src, gs, CV_BGR2GRAY);
 			if (tracking_mode == 2)
 			{
 				if (tracking > 0)
@@ -271,9 +276,9 @@ int main()
 								Scalar col_avg1, col_avg2, col_avg3;
 								vector<Point2f> cubepoints = pointcube(ep[i], stickdist);
 								
-								Vec3b color = yuv.at<Vec3b>(ep[i]);
+								//Vec3b color = yuv.at<Vec3b>(ep[i]);
 								col_avg1 = colavg(hsv, ep[i], stickdist);
-								col_avg2 = colavg(yuv, ep[i], stickdist);
+								col_avg2 = colavg(lab, ep[i], stickdist);
 								col_avg3 = colavg(rgb, ep[i], stickdist);
 								vector<Scalar> col_avg = { col_avg1, col_avg2, col_avg3 };
 								face1.push_back(col_avg1);
@@ -337,12 +342,16 @@ int main()
 				cube.centerToColor();
 				cube.numToColor();
 				cube.printCubeCharacters();
+				
 				unassigned = false;
 				
 			}
 			vector<string> cube_set = { "F:", "R:", "L:", "U:", "D:", "B:" };
 			
-			
+			if (faces.size() == 6)
+			{
+				FacesViewer(src, cube);
+			}
 			
 			if (faces.size() == 6 && !parsedsolution)
 			//if (!parsedsolution)
@@ -381,7 +390,7 @@ int main()
 			
 			imshow("Video", src);
 			imshow("Canny", dst);
-			//imshow("HSV", hsv);
+			//imshow("LAB", lab);
 			prev_dst = dst;
 			prev_gray = gray;
 			count++;
@@ -396,6 +405,7 @@ int main()
 			faces.clear();
 			parsedsolution = false;
 			finished = false;
+			unassigned = true;
 		}
 		if (c == ' ') colorextract = true;
 		if (c == 'n' || c == 'N') solution_iterator++;

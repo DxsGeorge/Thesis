@@ -840,7 +840,7 @@ int MatchToCenter(vector<Scalar> centers, Scalar color)
 	return min;
 }
 
-float ptdstw(Scalar a, Scalar b)
+float ptdstHSV(Scalar a, Scalar b)
 {
 	float dist;
 	if (a(1) < 100 || b(1) < 100)
@@ -848,10 +848,10 @@ float ptdstw(Scalar a, Scalar b)
 		dist = 1000;
 		if (a(1) < 100 && b(1) < 100)
 		{
-			dist = abs(a(1) - b(1));
+			dist = sqrt((a(1) - b(1))*(a(1) - b(1)));
 		}	
 	}
-	else dist = abs(a(0) - b(0));
+	else dist = sqrt((a(0) - b(0))*(a(0) - b(0)));
 	
 	return dist;
 }
@@ -862,9 +862,21 @@ float ptdstw2(Scalar a, Scalar b)
 	else return abs(a(0) - b(0));
 }
 
-float ptdst(Scalar a, Scalar b)
+float ptdstRGB(Scalar a, Scalar b)
 {
-	return sqrt((a[0] - b[0])*(a[0] - b[0]) + (a[1] - b[1])*(a[1] - b[1]));
+	if (a[0] + a[1] + a[2] < 600 && b[0] + b[1] + b[2] < 600)
+	return sqrt((a[0] - b[0])*(a[0] - b[0]) + (a[1] - b[1])*(a[1] - b[1]) + (a[2] - b[2])*(a[2] - b[2]));
+	else return 0;
+}
+
+float ptdstYUV(Scalar a, Scalar b)
+{
+	return sqrt((a[1] - b[1])*(a[1] - b[1]) + (a[2] - b[2])*(a[2] - b[2]));
+}
+
+float ptdstGRAY(float a, float b)
+{
+	return abs(a - b);
 }
 
 MyCube ProcessColors(vector<SimpleFace> faces)
@@ -930,10 +942,10 @@ MyCube ProcessColors(vector<SimpleFace> faces)
 					{
 						if (taken[k] < 8 && poss[make_tuple(j, i)][k] != -1)
 						{
-							dist1 = ptdstw(faces[k].getCenterHSV(), facecols[i]);
-							dist2 = ptdst(faces[k].getCenterYUV(), facecols1[i]);
-							dist3 = ptdst(faces[k].getCenterRGB(), facecols2[i]);
-							dist = (dist1 + dist2 + dist3) / 3;
+							dist1 = ptdstHSV(faces[k].getCenterHSV(), facecols[i]);
+							dist2 = ptdstYUV(faces[k].getCenterYUV(), facecols1[i]);
+							dist3 = ptdstRGB(faces[k].getCenterRGB(), facecols2[i]);
+							dist = (1.5*dist1 + 0.75*dist2 + 0.75*dist3) / 3;
 							considered++;
 							if (dist < bestd)
 							{
@@ -1201,3 +1213,104 @@ void StepShower(MyCube cube, string step, Mat &img)
 	DrawArrow(img, img.cols, img.rows, count, cw);
 
 }
+
+void DrawFaces(Mat img, int img_h, int img_w)
+{
+	Scalar black = Scalar{ 0, 0, 0 };
+	Point a1 = Point(0.7 * img_w, 0.2 * img_h);
+	Point a2 = Point(0.9 * img_w, 0.2 * img_h);
+	Point a3 = Point(0.9 * img_w, 0.4 * img_h);
+	Point a4 = Point(0.7 * img_w, 0.4 * img_h);
+
+	line(img, a1, a2, Scalar(0, 0, 0));
+	line(img, a2, a3, Scalar(0, 0, 0));
+	line(img, a3, a4, Scalar(0, 0, 0));
+	line(img, a4, a1, Scalar(0, 0, 0));
+
+	Point m1 = Point(0.766*img_w, 0.2*img_h);
+	Point m2 = Point(0.766*img_w, 0.4*img_h);
+	line(img, m1, m2, black);
+
+	Point m3 = Point(0.833*img_w, 0.2*img_h);
+	Point m4 = Point(0.833*img_w, 0.4*img_h);
+	line(img, m3, m4, black);
+
+	Point m5 = Point(0.7*img_w, 0.266*img_h);
+	Point m6 = Point(0.9*img_w, 0.266 * img_h);
+	line(img, m5, m6, black);
+
+	Point m7 = Point(0.7*img_w, 0.333*img_h);
+	Point m8 = Point(0.9*img_w, 0.333*img_h);
+	line(img, m7, m8, black);
+}
+
+void FacesViewer(Mat &img, MyCube cube)
+{
+	Scalar color;
+	Scalar sticker_blue = { 255, 0, 0 };
+	Scalar sticker_red = { 0, 0, 255 };
+	Scalar sticker_green = { 0, 128, 0 };
+	Scalar sticker_yellow = { 0, 255, 255 };
+	Scalar sticker_orange = { 0, 100, 255 };
+	Scalar sticker_white = { 255, 255, 255 };
+	Scalar sticker_uknown = { 0, 0, 0 };
+	for (int i = 0; i < 6; ++i)
+	{
+		for (int j = 0; j < 9; ++j)
+		{
+			Point ul, br;
+			int x, y;
+			if (cube.facecolors_char[i][j] == 'R') color = sticker_red;
+			else if (cube.facecolors_char[i][j] == 'O') color = sticker_orange;
+			else if (cube.facecolors_char[i][j] == 'Y') color = sticker_yellow;
+			else if (cube.facecolors_char[i][j] == 'G') color = sticker_green;
+			else if (cube.facecolors_char[i][j] == 'B') color = sticker_blue;
+			else if (cube.facecolors_char[i][j] == 'W') color = sticker_white;
+			else color = sticker_uknown;
+			switch (j)
+			{
+				case 0:
+					x = 10;
+					y = 10;
+					break;
+				case 1:
+					x = 20;
+					y = 10;
+					break;
+				case 2:
+					x = 30;
+					y = 10;
+					break;
+				case 3:
+					x = 10;
+					y = 20;
+					break;
+				case 4:
+					x = 20;
+					y = 20;
+					break;
+				case 5:
+					x = 30;
+					y = 20;
+					break;
+				case 6:
+					x = 10;
+					y = 30;
+					break;
+				case 7:
+					x = 20;
+					y = 30;
+					break;
+				case 8:
+					x = 30;
+					y = 30;
+					break;
+			}
+
+			ul = Point((i*40)+x, y);
+			br = Point((i*40)+x + 10, y + 10);
+			rectangle(img, ul, br, color, CV_FILLED);
+		}
+	}
+}
+

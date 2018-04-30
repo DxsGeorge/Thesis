@@ -74,11 +74,15 @@ float CompareOnlyH(Scalar a, Scalar b);
 
 int MatchToCenter(vector<Scalar> centers, Scalar color);
 
-float ptdstw(Scalar a, Scalar b);
+float ptdstHSV(Scalar a, Scalar b);
 
 float ptdstw2(Scalar a, Scalar b);
 
-float ptdst(Scalar a, Scalar b);
+float ptdstRGB(Scalar a, Scalar b);
+
+float ptdstYUV(Scalar a, Scalar b);
+
+float ptdstGRAY(float a, float b);
 
 MyCube ProcessColors(vector<SimpleFace> faces);
 
@@ -93,3 +97,8 @@ void DrawCubeGrid(int img_w, int img_h, Mat img);
 void DrawArrow(Mat img, int img_w, int img_h, int count, bool cw);
 
 void StepShower(MyCube cube, string step, Mat &img);
+
+void DrawFaces(Mat img, int h, int w);
+
+void FacesViewer(Mat &img, MyCube cube);
+

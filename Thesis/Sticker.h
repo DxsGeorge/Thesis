@@ -121,6 +121,7 @@ public:
 	void centerToColor();
 	void numToColor();
 	void printCubeCharacters();
+	void CubeModify(string step);
 };
 
 tuple<tuple<int,int>,tuple<int,int>> neighbors(int f, int s);

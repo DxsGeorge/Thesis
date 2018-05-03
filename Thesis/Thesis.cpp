@@ -121,7 +121,7 @@ int main()
 		Mat src;
 		cap >> src;
 		int gain = cap.get(CV_CAP_PROP_BRIGHTNESS);
-		cap.set(CV_CAP_PROP_BRIGHTNESS, -5);
+		cap.set(CV_CAP_PROP_BRIGHTNESS, 0);
 		//cout << "GAIN: " << gain << endl;
 		//src += Scalar(50, 50, 50);
 		if (!src.empty())
@@ -376,7 +376,7 @@ int main()
 				
 				if (solution_iterator < steps.size() && solution != "error")
 				{
-					cout << steps[solution_iterator] << endl;
+					//cout << steps[solution_iterator] << endl;
 					int stepface = StepFace(steps[solution_iterator]);
 					//ShowStep(steps[solution_iterator], stepface, src, cube); //todo fit step to cube face
 					StepShower(cube, steps[solution_iterator],src);
@@ -406,9 +406,16 @@ int main()
 			parsedsolution = false;
 			finished = false;
 			unassigned = true;
+			finished = false;
+			solution = "";
 		}
 		if (c == ' ') colorextract = true;
-		if (c == 'n' || c == 'N') solution_iterator++;
+		if (c == 'n' || c == 'N')
+		{
+			if (!finished) cube.CubeModify(steps[solution_iterator]);
+			solution_iterator++;
+			
+		}
 		//Sleep(33);
 	}
 }

@@ -1183,8 +1183,8 @@ void StepShower(MyCube cube, string step, Mat &img)
 	bool cw;
 	int int_step;
 	if (step[0] == 'F') int_step = 0;
-	else if (step[0] == 'L') int_step = 1;
-	else if (step[0] == 'R') int_step = 2;
+	else if (step[0] == 'L') int_step = 2;
+	else if (step[0] == 'R') int_step = 1;
 	else if (step[0] == 'U') int_step = 3;
 	else if (step[0] == 'D') int_step = 4;
 	else if (step[0] == 'B') int_step = 5;

@@ -343,6 +343,996 @@ void MyCube::numToColor()
 	}
 }
 
+void MyCube::CubeModify(string step)
+{
+	int int_step, count;
+	bool cw;
+
+	if (step[0] == 'F') int_step = 0;
+	else if (step[0] == 'L') int_step = 2;
+	else if (step[0] == 'R') int_step = 1;
+	else if (step[0] == 'U') int_step = 3;
+	else if (step[0] == 'D') int_step = 4;
+	else if (step[0] == 'B') int_step = 5;
+
+
+	if (step[1] == '2') count = 2;
+	else count = 1;
+
+	if (step[1] == '\'') cw = false;
+	else cw = true;
+	vector<MatchedFace> newfaces(6);
+	
+	if (cw)
+	{
+		switch (int_step)
+		{
+		case 0:
+			//front face
+			newfaces[0] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[0].colors[2], this->faces[0].colors[5], this->faces[0].colors[8],
+			//4                                 //5                           //6 
+			this->faces[0].colors[1], this->faces[0].colors[4], this->faces[0].colors[7],
+			//7                                 //8                           //9
+			this->faces[0].colors[0], this->faces[0].colors[3], this->faces[0].colors[6] });
+
+			//opposite face
+			newfaces[5] = this->faces[5];
+
+			//right face
+			newfaces[1] = this->faces[1];
+			newfaces[1].colors[0] = this->faces[3].colors[2];
+			newfaces[1].colors[1] = this->faces[3].colors[5];
+			newfaces[1].colors[2] = this->faces[3].colors[8];
+
+			//left face
+			newfaces[2] = this->faces[2];
+			newfaces[2].colors[6] = this->faces[4].colors[0];
+			newfaces[2].colors[7] = this->faces[4].colors[3];
+			newfaces[2].colors[8] = this->faces[4].colors[6];
+
+			//up face
+			newfaces[3] = this->faces[3];
+			newfaces[3].colors[2] = this->faces[2].colors[8];
+			newfaces[3].colors[5] = this->faces[2].colors[7];
+			newfaces[3].colors[8] = this->faces[2].colors[6];
+
+			//down face
+			newfaces[4] = this->faces[4];
+			newfaces[4].colors[0] = this->faces[1].colors[2];
+			newfaces[4].colors[3] = this->faces[1].colors[1];
+			newfaces[4].colors[6] = this->faces[1].colors[0];
+			break;
+
+		case 1:
+			//front face
+			newfaces[1] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[1].colors[2], this->faces[1].colors[5], this->faces[1].colors[8],
+			//4                                 //5                           //6 
+			this->faces[1].colors[1], this->faces[1].colors[4], this->faces[1].colors[7],
+			//7                                 //8                           //9
+			this->faces[1].colors[0], this->faces[1].colors[3], this->faces[1].colors[6] });
+
+			//opposite face
+			newfaces[2] = this->faces[2];
+
+			//right face
+			newfaces[5] = this->faces[5];
+			newfaces[5].colors[0] = this->faces[3].colors[8];
+			newfaces[5].colors[1] = this->faces[3].colors[7];
+			newfaces[5].colors[2] = this->faces[3].colors[6];
+
+			//left face
+			newfaces[0] = this->faces[0];
+			newfaces[0].colors[6] = this->faces[4].colors[6];
+			newfaces[0].colors[7] = this->faces[4].colors[7];
+			newfaces[0].colors[8] = this->faces[4].colors[8];
+
+			//up face
+			newfaces[3] = this->faces[3];
+			newfaces[3].colors[6] = this->faces[0].colors[6];
+			newfaces[3].colors[7] = this->faces[0].colors[7];
+			newfaces[3].colors[8] = this->faces[0].colors[8];
+
+			//down face
+			newfaces[4] = this->faces[4];
+			newfaces[4].colors[6] = this->faces[5].colors[2];
+			newfaces[4].colors[7] = this->faces[5].colors[1];
+			newfaces[4].colors[8] = this->faces[5].colors[0];
+			break;
+
+		case 2:
+			//front face
+			newfaces[2] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[2].colors[2], this->faces[2].colors[5], this->faces[2].colors[8],
+			//4                                 //5                           //6 
+			this->faces[2].colors[1], this->faces[2].colors[4], this->faces[2].colors[7],
+			//7                                 //8                           //9
+			this->faces[2].colors[0], this->faces[2].colors[3], this->faces[2].colors[6] });
+
+			//opposite face
+			newfaces[1] = this->faces[1];
+
+			//right face
+			newfaces[0] = this->faces[0];
+			newfaces[0].colors[0] = this->faces[3].colors[0];
+			newfaces[0].colors[1] = this->faces[3].colors[1];
+			newfaces[0].colors[2] = this->faces[3].colors[2];
+
+			//left face
+			newfaces[5] = this->faces[5];
+			newfaces[5].colors[6] = this->faces[4].colors[2];
+			newfaces[5].colors[7] = this->faces[4].colors[1];
+			newfaces[5].colors[8] = this->faces[4].colors[0];
+
+			//up face
+			newfaces[3] = this->faces[3];
+			newfaces[3].colors[0] = this->faces[5].colors[8];
+			newfaces[3].colors[1] = this->faces[5].colors[7];
+			newfaces[3].colors[2] = this->faces[5].colors[6];
+
+			//down face
+			newfaces[4] = this->faces[4];
+			newfaces[4].colors[0] = this->faces[0].colors[0];
+			newfaces[4].colors[1] = this->faces[0].colors[1];
+			newfaces[4].colors[2] = this->faces[0].colors[2];
+			break;
+
+		case 3:
+			//front face
+			newfaces[3] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[3].colors[2], this->faces[3].colors[5], this->faces[3].colors[8],
+			//4                                 //5                           //6 
+			this->faces[3].colors[1], this->faces[3].colors[4], this->faces[3].colors[7],
+			//7                                 //8                           //9
+			this->faces[3].colors[0], this->faces[3].colors[3], this->faces[3].colors[6] });
+
+			//opposite face
+			newfaces[4] = this->faces[4];
+
+			//right face
+			newfaces[1] = this->faces[1];
+			newfaces[1].colors[0] = this->faces[5].colors[0];
+			newfaces[1].colors[3] = this->faces[5].colors[3];
+			newfaces[1].colors[6] = this->faces[5].colors[6];
+
+			//left face
+			newfaces[2] = this->faces[2];
+			newfaces[2].colors[0] = this->faces[0].colors[0];
+			newfaces[2].colors[3] = this->faces[0].colors[3];
+			newfaces[2].colors[6] = this->faces[0].colors[6];
+
+			//up face
+			newfaces[5] = this->faces[5];
+			newfaces[5].colors[0] = this->faces[2].colors[8];
+			newfaces[5].colors[3] = this->faces[2].colors[7];
+			newfaces[5].colors[6] = this->faces[2].colors[6];
+
+			//down face
+			newfaces[0] = this->faces[0];
+			newfaces[0].colors[0] = this->faces[1].colors[0];
+			newfaces[0].colors[3] = this->faces[1].colors[3];
+			newfaces[0].colors[6] = this->faces[1].colors[6];
+			break;
+
+		case 4:
+			//front face
+			newfaces[4] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[4].colors[2], this->faces[4].colors[5], this->faces[4].colors[8],
+			//4                                 //5                           //6 
+			this->faces[4].colors[1], this->faces[4].colors[4], this->faces[4].colors[7],
+			//7                                 //8                           //9
+			this->faces[4].colors[0], this->faces[4].colors[3], this->faces[4].colors[6] });
+
+			//opposite face
+			newfaces[3] = this->faces[3];
+
+			//right face
+			newfaces[1] = this->faces[1];
+			newfaces[1].colors[2] = this->faces[0].colors[2];
+			newfaces[1].colors[5] = this->faces[0].colors[5];
+			newfaces[1].colors[8] = this->faces[0].colors[8];
+
+			//left face
+			newfaces[2] = this->faces[2];
+			newfaces[2].colors[2] = this->faces[5].colors[2];
+			newfaces[2].colors[5] = this->faces[5].colors[5];
+			newfaces[2].colors[8] = this->faces[5].colors[8];
+
+			//up face
+			newfaces[0] = this->faces[0];
+			newfaces[0].colors[2] = this->faces[2].colors[2];
+			newfaces[0].colors[5] = this->faces[2].colors[5];
+			newfaces[0].colors[8] = this->faces[2].colors[8];
+
+			//down face
+			newfaces[5] = this->faces[5];
+			newfaces[5].colors[2] = this->faces[1].colors[2];
+			newfaces[5].colors[5] = this->faces[1].colors[5];
+			newfaces[5].colors[8] = this->faces[1].colors[8];
+			break;
+
+		case 5:
+			//front face
+			newfaces[5] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[5].colors[2], this->faces[5].colors[5], this->faces[5].colors[8],
+			//4                                 //5                           //6 
+			this->faces[5].colors[1], this->faces[5].colors[4], this->faces[5].colors[7],
+			//7                                 //8                           //9
+			this->faces[5].colors[0], this->faces[5].colors[3], this->faces[5].colors[6] });
+
+			//opposite face
+			newfaces[0] = this->faces[0];
+
+			//right face
+			newfaces[2] = this->faces[2];
+			newfaces[2].colors[0] = this->faces[3].colors[0];
+			newfaces[2].colors[1] = this->faces[3].colors[3];
+			newfaces[2].colors[2] = this->faces[3].colors[6];
+
+			//left face
+			newfaces[1] = this->faces[1];
+			newfaces[1].colors[6] = this->faces[4].colors[8];
+			newfaces[1].colors[7] = this->faces[4].colors[5];
+			newfaces[1].colors[8] = this->faces[4].colors[2];
+
+			//up face
+			newfaces[3] = this->faces[3];
+			newfaces[3].colors[0] = this->faces[1].colors[6];
+			newfaces[3].colors[3] = this->faces[1].colors[7];
+			newfaces[3].colors[6] = this->faces[1].colors[8];
+
+			//down face
+			newfaces[4] = this->faces[4];
+			newfaces[4].colors[2] = this->faces[2].colors[0];
+			newfaces[4].colors[5] = this->faces[2].colors[1];
+			newfaces[4].colors[8] = this->faces[2].colors[2];
+			break;
+		}
+	}
+	else
+	{
+		switch (int_step)
+		{
+		case 0:
+			//front face
+			newfaces[0] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[0].colors[6], this->faces[0].colors[3], this->faces[0].colors[0],
+			//4                                 //5                           //6 
+			this->faces[0].colors[7], this->faces[0].colors[4], this->faces[0].colors[1],
+			//7                                 //8                           //9
+			this->faces[0].colors[8], this->faces[0].colors[5], this->faces[0].colors[2] });
+
+			//opposite face
+			newfaces[5] = this->faces[5];
+
+			//right face
+			newfaces[1] = this->faces[1];
+			newfaces[1].colors[0] = this->faces[4].colors[0];
+			newfaces[1].colors[1] = this->faces[4].colors[3];
+			newfaces[1].colors[2] = this->faces[4].colors[6];
+
+			//left face
+			newfaces[2] = this->faces[2];
+			newfaces[2].colors[6] = this->faces[3].colors[8];
+			newfaces[2].colors[7] = this->faces[3].colors[5];
+			newfaces[2].colors[8] = this->faces[3].colors[2];
+
+			//up face
+			newfaces[3] = this->faces[3];
+			newfaces[3].colors[2] = this->faces[1].colors[0];
+			newfaces[3].colors[5] = this->faces[1].colors[1];
+			newfaces[3].colors[8] = this->faces[1].colors[2];
+
+			//down face
+			newfaces[4] = this->faces[4];
+			newfaces[4].colors[0] = this->faces[2].colors[6];
+			newfaces[4].colors[3] = this->faces[2].colors[7];
+			newfaces[4].colors[6] = this->faces[2].colors[8];
+			break;
+
+		case 1:
+			//front face
+			newfaces[1] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[1].colors[6], this->faces[1].colors[3], this->faces[1].colors[0],
+			//4                                 //5                           //6 
+			this->faces[1].colors[7], this->faces[1].colors[4], this->faces[1].colors[1],
+			//7                                 //8                           //9
+			this->faces[1].colors[8], this->faces[1].colors[5], this->faces[1].colors[2] });
+
+			//opposite face
+			newfaces[2] = this->faces[2];
+
+			//right face
+			newfaces[5] = this->faces[5];
+			newfaces[5].colors[0] = this->faces[4].colors[8];
+			newfaces[5].colors[1] = this->faces[4].colors[7];
+			newfaces[5].colors[2] = this->faces[4].colors[6];
+
+			//left face
+			newfaces[0] = this->faces[0];
+			newfaces[0].colors[6] = this->faces[3].colors[6];
+			newfaces[0].colors[7] = this->faces[3].colors[7];
+			newfaces[0].colors[8] = this->faces[3].colors[8];
+
+			//up face
+			newfaces[3] = this->faces[3];
+			newfaces[3].colors[6] = this->faces[5].colors[2];
+			newfaces[3].colors[7] = this->faces[5].colors[1];
+			newfaces[3].colors[8] = this->faces[5].colors[0];
+
+			//down face
+			newfaces[4] = this->faces[4];
+			newfaces[4].colors[6] = this->faces[0].colors[6];
+			newfaces[4].colors[7] = this->faces[0].colors[7];
+			newfaces[4].colors[8] = this->faces[0].colors[8];
+			break;
+
+		case 2:
+			//front face
+			newfaces[2] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[2].colors[6], this->faces[2].colors[3], this->faces[2].colors[0],
+			//4                                 //5                           //6 
+			this->faces[2].colors[7], this->faces[2].colors[4], this->faces[2].colors[1],
+			//7                                 //8                           //9
+			this->faces[2].colors[8], this->faces[2].colors[5], this->faces[2].colors[2] });
+
+			//opposite face
+			newfaces[1] = this->faces[1];
+
+			//right face
+			newfaces[0] = this->faces[0];
+			newfaces[0].colors[0] = this->faces[4].colors[0];
+			newfaces[0].colors[1] = this->faces[4].colors[1];
+			newfaces[0].colors[2] = this->faces[4].colors[2];
+
+			//left face
+			newfaces[5] = this->faces[5];
+			newfaces[5].colors[6] = this->faces[3].colors[2];
+			newfaces[5].colors[7] = this->faces[3].colors[1];
+			newfaces[5].colors[8] = this->faces[3].colors[0];
+
+			//up face
+			newfaces[3] = this->faces[3];
+			newfaces[3].colors[0] = this->faces[0].colors[0];
+			newfaces[3].colors[1] = this->faces[0].colors[1];
+			newfaces[3].colors[2] = this->faces[0].colors[2];
+
+			//down face
+			newfaces[4] = this->faces[4];
+			newfaces[4].colors[0] = this->faces[5].colors[8];
+			newfaces[4].colors[1] = this->faces[5].colors[7];
+			newfaces[4].colors[2] = this->faces[5].colors[6];
+			break;
+
+		case 3:
+			//front face
+			newfaces[3] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[3].colors[6], this->faces[3].colors[3], this->faces[3].colors[0],
+			//4                                 //5                           //6 
+			this->faces[3].colors[7], this->faces[3].colors[4], this->faces[3].colors[1],
+			//7                                 //8                           //9
+			this->faces[3].colors[8], this->faces[3].colors[5], this->faces[3].colors[2] });
+
+			//opposite face
+			newfaces[4] = this->faces[4];
+
+			//right face
+			newfaces[1] = this->faces[1];
+			newfaces[1].colors[0] = this->faces[0].colors[0];
+			newfaces[1].colors[3] = this->faces[0].colors[3];
+			newfaces[1].colors[6] = this->faces[0].colors[6];
+
+			//left face
+			newfaces[2] = this->faces[2];
+			newfaces[2].colors[0] = this->faces[5].colors[0];
+			newfaces[2].colors[3] = this->faces[5].colors[3];
+			newfaces[2].colors[6] = this->faces[5].colors[6];
+
+			//up face
+			newfaces[5] = this->faces[5];
+			newfaces[5].colors[0] = this->faces[1].colors[0];
+			newfaces[5].colors[3] = this->faces[1].colors[3];
+			newfaces[5].colors[6] = this->faces[1].colors[6];
+
+			//down face
+			newfaces[0] = this->faces[0];
+			newfaces[0].colors[0] = this->faces[2].colors[0];
+			newfaces[0].colors[3] = this->faces[2].colors[3];
+			newfaces[0].colors[6] = this->faces[2].colors[6];
+			break;
+
+		case 4:
+			//front face
+			newfaces[4] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[4].colors[6], this->faces[4].colors[3], this->faces[4].colors[0],
+			//4                                 //5                           //6 
+			this->faces[4].colors[7], this->faces[4].colors[4], this->faces[4].colors[1],
+			//7                                 //8                           //9
+			this->faces[4].colors[8], this->faces[4].colors[5], this->faces[4].colors[2] });
+
+			//opposite face
+			newfaces[3] = this->faces[3];
+
+			//right face
+			newfaces[1] = this->faces[1];
+			newfaces[1].colors[2] = this->faces[5].colors[2];
+			newfaces[1].colors[5] = this->faces[5].colors[5];
+			newfaces[1].colors[8] = this->faces[5].colors[8];
+
+			//left face
+			newfaces[2] = this->faces[2];
+			newfaces[2].colors[2] = this->faces[0].colors[2];
+			newfaces[2].colors[5] = this->faces[0].colors[5];
+			newfaces[2].colors[8] = this->faces[0].colors[8];
+
+			//up face
+			newfaces[0] = this->faces[0];
+			newfaces[0].colors[2] = this->faces[1].colors[2];
+			newfaces[0].colors[5] = this->faces[1].colors[5];
+			newfaces[0].colors[8] = this->faces[1].colors[8];
+
+			//down face
+			newfaces[5] = this->faces[5];
+			newfaces[5].colors[2] = this->faces[2].colors[2];
+			newfaces[5].colors[5] = this->faces[2].colors[5];
+			newfaces[5].colors[8] = this->faces[2].colors[8];
+			break;
+
+		case 5:
+			//front face
+			newfaces[5] =
+				//1                                 //2                           //3
+				MatchedFace(
+			{ this->faces[5].colors[6], this->faces[5].colors[3], this->faces[5].colors[0],
+			//4                                 //5                           //6 
+			this->faces[5].colors[7], this->faces[5].colors[4], this->faces[5].colors[1],
+			//7                                 //8                           //9
+			this->faces[5].colors[8], this->faces[5].colors[5], this->faces[5].colors[2] });
+
+			//opposite face
+			newfaces[0] = this->faces[0];
+
+			//right face
+			newfaces[2] = this->faces[2];
+			newfaces[2].colors[0] = this->faces[4].colors[2];
+			newfaces[2].colors[1] = this->faces[4].colors[5];
+			newfaces[2].colors[2] = this->faces[4].colors[8];
+
+			//left face
+			newfaces[1] = this->faces[1];
+			newfaces[1].colors[6] = this->faces[3].colors[0];
+			newfaces[1].colors[7] = this->faces[3].colors[3];
+			newfaces[1].colors[8] = this->faces[3].colors[6];
+
+			//up face
+			newfaces[3] = this->faces[3];
+			newfaces[3].colors[0] = this->faces[2].colors[2];
+			newfaces[3].colors[3] = this->faces[2].colors[1];
+			newfaces[3].colors[6] = this->faces[2].colors[0];
+
+			//down face
+			newfaces[4] = this->faces[4];
+			newfaces[4].colors[2] = this->faces[1].colors[8];
+			newfaces[4].colors[5] = this->faces[1].colors[7];
+			newfaces[4].colors[8] = this->faces[1].colors[6];
+			break;
+		}
+	}
+
+	this->faces = newfaces;
+	this->facecolors_char.clear();
+	this->numToColor();
+
+	if (count == 2)
+	{
+		if (cw)
+		{
+			switch (int_step)
+			{
+			case 0:
+				//front face
+				newfaces[0] =
+					//1                                 //2                           //3
+					MatchedFace(
+				{ this->faces[0].colors[2], this->faces[0].colors[5], this->faces[0].colors[8],
+				//4                                 //5                           //6 
+				this->faces[0].colors[1], this->faces[0].colors[4], this->faces[0].colors[7],
+				//7                                 //8                           //9
+				this->faces[0].colors[0], this->faces[0].colors[3], this->faces[0].colors[6] });
+
+				//opposite face
+				newfaces[5] = this->faces[5];
+
+				//right face
+				newfaces[1] = this->faces[1];
+				newfaces[1].colors[0] = this->faces[3].colors[2];
+				newfaces[1].colors[1] = this->faces[3].colors[5];
+				newfaces[1].colors[2] = this->faces[3].colors[8];
+
+				//left face
+				newfaces[2] = this->faces[2];
+				newfaces[2].colors[6] = this->faces[4].colors[0];
+				newfaces[2].colors[7] = this->faces[4].colors[3];
+				newfaces[2].colors[8] = this->faces[4].colors[6];
+
+				//up face
+				newfaces[3] = this->faces[3];
+				newfaces[3].colors[2] = this->faces[2].colors[8];
+				newfaces[3].colors[5] = this->faces[2].colors[7];
+				newfaces[3].colors[8] = this->faces[2].colors[6];
+
+				//down face
+				newfaces[4] = this->faces[4];
+				newfaces[4].colors[0] = this->faces[1].colors[2];
+				newfaces[4].colors[3] = this->faces[1].colors[1];
+				newfaces[4].colors[6] = this->faces[1].colors[0];
+				break;
+
+			case 1:
+				//front face
+				newfaces[1] =
+					//1                                 //2                           //3
+					MatchedFace(
+				{ this->faces[1].colors[2], this->faces[1].colors[5], this->faces[1].colors[8],
+				//4                                 //5                           //6 
+				this->faces[1].colors[1], this->faces[1].colors[4], this->faces[1].colors[7],
+				//7                                 //8                           //9
+				this->faces[1].colors[0], this->faces[1].colors[3], this->faces[1].colors[6] });
+
+				//opposite face
+				newfaces[2] = this->faces[2];
+
+				//right face
+				newfaces[5] = this->faces[5];
+				newfaces[5].colors[0] = this->faces[3].colors[8];
+				newfaces[5].colors[1] = this->faces[3].colors[7];
+				newfaces[5].colors[2] = this->faces[3].colors[6];
+
+				//left face
+				newfaces[0] = this->faces[0];
+				newfaces[0].colors[6] = this->faces[4].colors[6];
+				newfaces[0].colors[7] = this->faces[4].colors[7];
+				newfaces[0].colors[8] = this->faces[4].colors[8];
+
+				//up face
+				newfaces[3] = this->faces[3];
+				newfaces[3].colors[6] = this->faces[0].colors[6];
+				newfaces[3].colors[7] = this->faces[0].colors[7];
+				newfaces[3].colors[8] = this->faces[0].colors[8];
+
+				//down face
+				newfaces[4] = this->faces[4];
+				newfaces[4].colors[6] = this->faces[5].colors[2];
+				newfaces[4].colors[7] = this->faces[5].colors[1];
+				newfaces[4].colors[8] = this->faces[5].colors[0];
+				break;
+
+			case 2:
+				//front face
+				newfaces[2] =
+					//1                                 //2                           //3
+					MatchedFace(
+				{ this->faces[2].colors[2], this->faces[2].colors[5], this->faces[2].colors[8],
+				//4                                 //5                           //6 
+				this->faces[2].colors[1], this->faces[2].colors[4], this->faces[2].colors[7],
+				//7                                 //8                           //9
+				this->faces[2].colors[0], this->faces[2].colors[3], this->faces[2].colors[6] });
+
+				//opposite face
+				newfaces[1] = this->faces[1];
+
+				//right face
+				newfaces[0] = this->faces[0];
+				newfaces[0].colors[0] = this->faces[3].colors[0];
+				newfaces[0].colors[1] = this->faces[3].colors[1];
+				newfaces[0].colors[2] = this->faces[3].colors[2];
+
+				//left face
+				newfaces[5] = this->faces[5];
+				newfaces[5].colors[6] = this->faces[4].colors[2];
+				newfaces[5].colors[7] = this->faces[4].colors[1];
+				newfaces[5].colors[8] = this->faces[4].colors[0];
+
+				//up face
+				newfaces[3] = this->faces[3];
+				newfaces[3].colors[0] = this->faces[5].colors[8];
+				newfaces[3].colors[1] = this->faces[5].colors[7];
+				newfaces[3].colors[2] = this->faces[5].colors[6];
+
+				//down face
+				newfaces[4] = this->faces[4];
+				newfaces[4].colors[0] = this->faces[0].colors[0];
+				newfaces[4].colors[1] = this->faces[0].colors[1];
+				newfaces[4].colors[2] = this->faces[0].colors[2];
+				break;
+
+			case 3:
+				//front face
+				newfaces[3] =
+					//1                                 //2                           //3
+					MatchedFace(
+				{ this->faces[3].colors[2], this->faces[3].colors[5], this->faces[3].colors[8],
+				//4                                 //5                           //6 
+				this->faces[3].colors[1], this->faces[3].colors[4], this->faces[3].colors[7],
+				//7                                 //8                           //9
+				this->faces[3].colors[0], this->faces[3].colors[3], this->faces[3].colors[6] });
+
+				//opposite face
+				newfaces[4] = this->faces[4];
+
+				//right face
+				newfaces[1] = this->faces[1];
+				newfaces[1].colors[0] = this->faces[5].colors[0];
+				newfaces[1].colors[3] = this->faces[5].colors[3];
+				newfaces[1].colors[6] = this->faces[5].colors[6];
+
+				//left face
+				newfaces[2] = this->faces[2];
+				newfaces[2].colors[0] = this->faces[0].colors[0];
+				newfaces[2].colors[3] = this->faces[0].colors[3];
+				newfaces[2].colors[6] = this->faces[0].colors[6];
+
+				//up face
+				newfaces[5] = this->faces[5];
+				newfaces[5].colors[0] = this->faces[2].colors[8];
+				newfaces[5].colors[3] = this->faces[2].colors[7];
+				newfaces[5].colors[6] = this->faces[2].colors[6];
+
+				//down face
+				newfaces[0] = this->faces[0];
+				newfaces[0].colors[0] = this->faces[1].colors[0];
+				newfaces[0].colors[3] = this->faces[1].colors[3];
+				newfaces[0].colors[6] = this->faces[1].colors[6];
+				break;
+
+			case 4:
+				//front face
+				newfaces[4] =
+					//1                                 //2                           //3
+					MatchedFace(
+				{ this->faces[4].colors[2], this->faces[4].colors[5], this->faces[4].colors[8],
+				//4                                 //5                           //6 
+				this->faces[4].colors[1], this->faces[4].colors[4], this->faces[4].colors[7],
+				//7                                 //8                           //9
+				this->faces[4].colors[0], this->faces[4].colors[3], this->faces[4].colors[6] });
+
+				//opposite face
+				newfaces[3] = this->faces[3];
+
+				//right face
+				newfaces[1] = this->faces[1];
+				newfaces[1].colors[2] = this->faces[0].colors[2];
+				newfaces[1].colors[5] = this->faces[0].colors[5];
+				newfaces[1].colors[8] = this->faces[0].colors[8];
+
+				//left face
+				newfaces[2] = this->faces[2];
+				newfaces[2].colors[2] = this->faces[5].colors[2];
+				newfaces[2].colors[5] = this->faces[5].colors[5];
+				newfaces[2].colors[8] = this->faces[5].colors[8];
+
+				//up face
+				newfaces[0] = this->faces[0];
+				newfaces[0].colors[2] = this->faces[2].colors[2];
+				newfaces[0].colors[5] = this->faces[2].colors[5];
+				newfaces[0].colors[8] = this->faces[2].colors[8];
+
+				//down face
+				newfaces[5] = this->faces[5];
+				newfaces[5].colors[2] = this->faces[1].colors[2];
+				newfaces[5].colors[5] = this->faces[1].colors[5];
+				newfaces[5].colors[8] = this->faces[1].colors[8];
+				break;
+
+			case 5:
+				//front face
+				newfaces[5] =
+					//1                                 //2                           //3
+					MatchedFace(
+				{ this->faces[5].colors[2], this->faces[5].colors[5], this->faces[5].colors[8],
+				//4                                 //5                           //6 
+				this->faces[5].colors[1], this->faces[5].colors[4], this->faces[5].colors[7],
+				//7                                 //8                           //9
+				this->faces[5].colors[0], this->faces[5].colors[3], this->faces[5].colors[6] });
+
+				//opposite face
+				newfaces[0] = this->faces[0];
+
+				//right face
+				newfaces[2] = this->faces[2];
+				newfaces[2].colors[0] = this->faces[3].colors[0];
+				newfaces[2].colors[1] = this->faces[3].colors[3];
+				newfaces[2].colors[2] = this->faces[3].colors[6];
+
+				//left face
+				newfaces[1] = this->faces[1];
+				newfaces[1].colors[6] = this->faces[4].colors[8];
+				newfaces[1].colors[7] = this->faces[4].colors[5];
+				newfaces[1].colors[8] = this->faces[4].colors[2];
+
+				//up face
+				newfaces[3] = this->faces[3];
+				newfaces[3].colors[0] = this->faces[1].colors[6];
+				newfaces[3].colors[3] = this->faces[1].colors[7];
+				newfaces[3].colors[6] = this->faces[1].colors[8];
+
+				//down face
+				newfaces[4] = this->faces[4];
+				newfaces[4].colors[2] = this->faces[2].colors[0];
+				newfaces[4].colors[5] = this->faces[2].colors[1];
+				newfaces[4].colors[8] = this->faces[2].colors[2];
+				break;
+			}
+		}
+		else
+		{
+			switch (int_step)
+				{
+				case 0:
+					//front face
+					newfaces[0] =
+						//1                                 //2                           //3
+						MatchedFace(
+					{ this->faces[0].colors[6], this->faces[0].colors[3], this->faces[0].colors[0],
+					//4                                 //5                           //6 
+					this->faces[0].colors[7], this->faces[0].colors[4], this->faces[0].colors[1],
+					//7                                 //8                           //9
+					this->faces[0].colors[8], this->faces[0].colors[5], this->faces[0].colors[2] });
+
+					//opposite face
+					newfaces[5] = this->faces[5];
+
+					//right face
+					newfaces[1] = this->faces[1];
+					newfaces[1].colors[0] = this->faces[4].colors[0];
+					newfaces[1].colors[1] = this->faces[4].colors[3];
+					newfaces[1].colors[2] = this->faces[4].colors[6];
+
+					//left face
+					newfaces[2] = this->faces[2];
+					newfaces[2].colors[6] = this->faces[3].colors[8];
+					newfaces[2].colors[7] = this->faces[3].colors[5];
+					newfaces[2].colors[8] = this->faces[3].colors[2];
+
+					//up face
+					newfaces[3] = this->faces[3];
+					newfaces[3].colors[2] = this->faces[1].colors[0];
+					newfaces[3].colors[5] = this->faces[1].colors[1];
+					newfaces[3].colors[8] = this->faces[1].colors[2];
+
+					//down face
+					newfaces[4] = this->faces[4];
+					newfaces[4].colors[0] = this->faces[2].colors[6];
+					newfaces[4].colors[3] = this->faces[2].colors[7];
+					newfaces[4].colors[6] = this->faces[2].colors[8];
+					break;
+
+				case 1:
+					//front face
+					newfaces[1] =
+						//1                                 //2                           //3
+						MatchedFace(
+					{ this->faces[1].colors[6], this->faces[1].colors[3], this->faces[1].colors[0],
+					//4                                 //5                           //6 
+					this->faces[1].colors[7], this->faces[1].colors[4], this->faces[1].colors[1],
+					//7                                 //8                           //9
+					this->faces[1].colors[8], this->faces[1].colors[5], this->faces[1].colors[2] });
+
+					//opposite face
+					newfaces[2] = this->faces[2];
+
+					//right face
+					newfaces[5] = this->faces[5];
+					newfaces[5].colors[0] = this->faces[4].colors[8];
+					newfaces[5].colors[1] = this->faces[4].colors[7];
+					newfaces[5].colors[2] = this->faces[4].colors[6];
+
+					//left face
+					newfaces[0] = this->faces[0];
+					newfaces[0].colors[6] = this->faces[3].colors[6];
+					newfaces[0].colors[7] = this->faces[3].colors[7];
+					newfaces[0].colors[8] = this->faces[3].colors[8];
+
+					//up face
+					newfaces[3] = this->faces[3];
+					newfaces[3].colors[6] = this->faces[5].colors[2];
+					newfaces[3].colors[7] = this->faces[5].colors[1];
+					newfaces[3].colors[8] = this->faces[5].colors[0];
+
+					//down face
+					newfaces[4] = this->faces[4];
+					newfaces[4].colors[6] = this->faces[0].colors[6];
+					newfaces[4].colors[7] = this->faces[0].colors[7];
+					newfaces[4].colors[8] = this->faces[0].colors[8];
+					break;
+
+				case 2:
+					//front face
+					newfaces[2] =
+						//1                                 //2                           //3
+						MatchedFace(
+					{ this->faces[2].colors[6], this->faces[2].colors[3], this->faces[2].colors[0],
+					//4                                 //5                           //6 
+					this->faces[2].colors[7], this->faces[2].colors[4], this->faces[2].colors[1],
+					//7                                 //8                           //9
+					this->faces[2].colors[8], this->faces[2].colors[5], this->faces[2].colors[2] });
+
+					//opposite face
+					newfaces[1] = this->faces[1];
+
+					//right face
+					newfaces[0] = this->faces[0];
+					newfaces[0].colors[0] = this->faces[4].colors[0];
+					newfaces[0].colors[1] = this->faces[4].colors[1];
+					newfaces[0].colors[2] = this->faces[4].colors[2];
+
+					//left face
+					newfaces[5] = this->faces[5];
+					newfaces[5].colors[6] = this->faces[3].colors[2];
+					newfaces[5].colors[7] = this->faces[3].colors[1];
+					newfaces[5].colors[8] = this->faces[3].colors[0];
+
+					//up face
+					newfaces[3] = this->faces[3];
+					newfaces[3].colors[0] = this->faces[0].colors[0];
+					newfaces[3].colors[1] = this->faces[0].colors[1];
+					newfaces[3].colors[2] = this->faces[0].colors[2];
+
+					//down face
+					newfaces[4] = this->faces[4];
+					newfaces[4].colors[0] = this->faces[5].colors[8];
+					newfaces[4].colors[1] = this->faces[5].colors[7];
+					newfaces[4].colors[2] = this->faces[5].colors[6];
+					break;
+
+				case 3:
+					//front face
+					newfaces[3] =
+						//1                                 //2                           //3
+						MatchedFace(
+					{ this->faces[3].colors[6], this->faces[3].colors[3], this->faces[3].colors[0],
+					//4                                 //5                           //6 
+					this->faces[3].colors[7], this->faces[3].colors[4], this->faces[3].colors[1],
+					//7                                 //8                           //9
+					this->faces[3].colors[8], this->faces[3].colors[5], this->faces[3].colors[2] });
+
+					//opposite face
+					newfaces[4] = this->faces[4];
+
+					//right face
+					newfaces[1] = this->faces[1];
+					newfaces[1].colors[0] = this->faces[0].colors[0];
+					newfaces[1].colors[3] = this->faces[0].colors[3];
+					newfaces[1].colors[6] = this->faces[0].colors[6];
+
+					//left face
+					newfaces[2] = this->faces[2];
+					newfaces[2].colors[0] = this->faces[5].colors[0];
+					newfaces[2].colors[3] = this->faces[5].colors[3];
+					newfaces[2].colors[6] = this->faces[5].colors[6];
+
+					//up face
+					newfaces[5] = this->faces[5];
+					newfaces[5].colors[0] = this->faces[1].colors[0];
+					newfaces[5].colors[3] = this->faces[1].colors[3];
+					newfaces[5].colors[6] = this->faces[1].colors[6];
+
+					//down face
+					newfaces[0] = this->faces[0];
+					newfaces[0].colors[0] = this->faces[2].colors[0];
+					newfaces[0].colors[3] = this->faces[2].colors[3];
+					newfaces[0].colors[6] = this->faces[2].colors[6];
+					break;
+
+				case 4:
+					//front face
+					newfaces[4] =
+						//1                                 //2                           //3
+						MatchedFace(
+					{ this->faces[4].colors[6], this->faces[4].colors[3], this->faces[4].colors[0],
+					//4                                 //5                           //6 
+					this->faces[4].colors[7], this->faces[4].colors[4], this->faces[4].colors[1],
+					//7                                 //8                           //9
+					this->faces[4].colors[8], this->faces[4].colors[5], this->faces[4].colors[2] });
+
+					//opposite face
+					newfaces[3] = this->faces[3];
+
+					//right face
+					newfaces[1] = this->faces[1];
+					newfaces[1].colors[2] = this->faces[5].colors[2];
+					newfaces[1].colors[5] = this->faces[5].colors[5];
+					newfaces[1].colors[8] = this->faces[5].colors[8];
+
+					//left face
+					newfaces[2] = this->faces[2];
+					newfaces[2].colors[2] = this->faces[0].colors[2];
+					newfaces[2].colors[5] = this->faces[0].colors[5];
+					newfaces[2].colors[8] = this->faces[0].colors[8];
+
+					//up face
+					newfaces[0] = this->faces[0];
+					newfaces[0].colors[2] = this->faces[1].colors[2];
+					newfaces[0].colors[5] = this->faces[1].colors[5];
+					newfaces[0].colors[8] = this->faces[1].colors[8];
+
+					//down face
+					newfaces[5] = this->faces[5];
+					newfaces[5].colors[2] = this->faces[2].colors[2];
+					newfaces[5].colors[5] = this->faces[2].colors[5];
+					newfaces[5].colors[8] = this->faces[2].colors[8];
+					break;
+
+				case 5:
+					//front face
+					newfaces[5] =
+						//1                                 //2                           //3
+						MatchedFace(
+					{ this->faces[5].colors[6], this->faces[5].colors[3], this->faces[5].colors[0],
+					//4                                 //5                           //6 
+					this->faces[5].colors[7], this->faces[5].colors[4], this->faces[5].colors[1],
+					//7                                 //8                           //9
+					this->faces[5].colors[8], this->faces[5].colors[5], this->faces[5].colors[2] });
+
+					//opposite face
+					newfaces[0] = this->faces[0];
+
+					//right face
+					newfaces[2] = this->faces[2];
+					newfaces[2].colors[0] = this->faces[4].colors[2];
+					newfaces[2].colors[1] = this->faces[4].colors[5];
+					newfaces[2].colors[2] = this->faces[4].colors[8];
+
+					//left face
+					newfaces[1] = this->faces[1];
+					newfaces[1].colors[6] = this->faces[3].colors[0];
+					newfaces[1].colors[7] = this->faces[3].colors[3];
+					newfaces[1].colors[8] = this->faces[3].colors[6];
+
+					//up face
+					newfaces[3] = this->faces[3];
+					newfaces[3].colors[0] = this->faces[2].colors[2];
+					newfaces[3].colors[3] = this->faces[2].colors[1];
+					newfaces[3].colors[6] = this->faces[2].colors[0];
+
+					//down face
+					newfaces[4] = this->faces[4];
+					newfaces[4].colors[2] = this->faces[1].colors[8];
+					newfaces[4].colors[5] = this->faces[1].colors[7];
+					newfaces[4].colors[8] = this->faces[1].colors[6];
+					break;
+				}
+		}
+	}
+
+	this->faces = newfaces;
+	this->facecolors_char.clear();
+	this->numToColor();
+}
+
 
 ColorFace::ColorFace()
 {

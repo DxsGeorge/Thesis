@@ -512,8 +512,8 @@ void MyCube::CubeModify(string step)
 
 			//up face
 			newfaces[5] = this->faces[5];
-			newfaces[5].colors[0] = this->faces[2].colors[8];
-			newfaces[5].colors[3] = this->faces[2].colors[7];
+			newfaces[5].colors[0] = this->faces[2].colors[0];
+			newfaces[5].colors[3] = this->faces[2].colors[3];
 			newfaces[5].colors[6] = this->faces[2].colors[6];
 
 			//down face
@@ -578,9 +578,9 @@ void MyCube::CubeModify(string step)
 
 			//right face
 			newfaces[2] = this->faces[2];
-			newfaces[2].colors[0] = this->faces[3].colors[0];
+			newfaces[2].colors[0] = this->faces[3].colors[6];
 			newfaces[2].colors[1] = this->faces[3].colors[3];
-			newfaces[2].colors[2] = this->faces[3].colors[6];
+			newfaces[2].colors[2] = this->faces[3].colors[0];
 
 			//left face
 			newfaces[1] = this->faces[1];
@@ -622,9 +622,9 @@ void MyCube::CubeModify(string step)
 
 			//right face
 			newfaces[1] = this->faces[1];
-			newfaces[1].colors[0] = this->faces[4].colors[0];
+			newfaces[1].colors[0] = this->faces[4].colors[6];
 			newfaces[1].colors[1] = this->faces[4].colors[3];
-			newfaces[1].colors[2] = this->faces[4].colors[6];
+			newfaces[1].colors[2] = this->faces[4].colors[0];
 
 			//left face
 			newfaces[2] = this->faces[2];
@@ -997,8 +997,8 @@ void MyCube::CubeModify(string step)
 
 				//up face
 				newfaces[5] = this->faces[5];
-				newfaces[5].colors[0] = this->faces[2].colors[8];
-				newfaces[5].colors[3] = this->faces[2].colors[7];
+				newfaces[5].colors[0] = this->faces[2].colors[0];
+				newfaces[5].colors[3] = this->faces[2].colors[3];
 				newfaces[5].colors[6] = this->faces[2].colors[6];
 
 				//down face
@@ -1063,9 +1063,9 @@ void MyCube::CubeModify(string step)
 
 				//right face
 				newfaces[2] = this->faces[2];
-				newfaces[2].colors[0] = this->faces[3].colors[0];
+				newfaces[2].colors[0] = this->faces[3].colors[6];
 				newfaces[2].colors[1] = this->faces[3].colors[3];
-				newfaces[2].colors[2] = this->faces[3].colors[6];
+				newfaces[2].colors[2] = this->faces[3].colors[0];
 
 				//left face
 				newfaces[1] = this->faces[1];
@@ -1107,9 +1107,9 @@ void MyCube::CubeModify(string step)
 
 					//right face
 					newfaces[1] = this->faces[1];
-					newfaces[1].colors[0] = this->faces[4].colors[0];
+					newfaces[1].colors[0] = this->faces[4].colors[6];
 					newfaces[1].colors[1] = this->faces[4].colors[3];
-					newfaces[1].colors[2] = this->faces[4].colors[6];
+					newfaces[1].colors[2] = this->faces[4].colors[0];
 
 					//left face
 					newfaces[2] = this->faces[2];

@@ -30,6 +30,8 @@ int main()
 	VideoCapture cap;
 	char *filename = "http://192.168.1.5:8080/video?.mjpeg";
 	cap.open(0);
+
+	VideoWriter video("outcpp.avi", CV_FOURCC('M', 'J', 'P', 'G'), 30, Size(cap.get(CV_CAP_PROP_FRAME_WIDTH)/2, cap.get(CV_CAP_PROP_FRAME_HEIGHT)/2));
 	int tracking_mode = 2;
 	int undetectednum = 100;
 	bool of;
@@ -193,18 +195,18 @@ int main()
 						colorextract = false;
 					}				
 				}
-				if (tracking == 0)
+				if (tracking == 0 && faces.size() < 6)
 				{
 					//find cube face
 					vector<Vec4i> lines;
 					vector<Point> edges;
 					HoughLinesP(dst, lines, 1, CV_PI / 45, thr, 10, 5);
-					
+					/*
 					for (size_t i = 0; i < lines.size(); i++)
 					{
 						line(src, Point(lines[i][0], lines[i][1]), Point(lines[i][2], lines[i][3]), Scalar(0, 0, 255), 1);
 					}
-					
+					*/
 					if (lines.size() < 50) thr = max(thr - 1, 2);
 					else thr++;
 					//cout << "lines: " << lines.size() << "threshold: " << thr << endl;
@@ -222,7 +224,7 @@ int main()
 						Point(p.x + 2 * v1.x - v2.x, p.y + 2 * v1.y - v2.y) };
 					prevface = { pt[0], pt[1], pt[2] };
 				}
-				if (detected > 0 || undetectednum < 1) 
+				if ((detected > 0 || undetectednum < 1) && faces.size()<6) 
 				{
 					if (detected <= 0)
 					{
@@ -376,7 +378,7 @@ int main()
 				
 				if (solution_iterator < steps.size() && solution != "error")
 				{
-					//cout << steps[solution_iterator] << endl;
+					cout << steps[solution_iterator] << endl;
 					int stepface = StepFace(steps[solution_iterator]);
 					//ShowStep(steps[solution_iterator], stepface, src, cube); //todo fit step to cube face
 					StepShower(cube, steps[solution_iterator],src);
@@ -409,13 +411,15 @@ int main()
 			finished = false;
 			solution = "";
 		}
-		if (c == ' ') colorextract = true;
+		if (c == ' ' && faces.size() < 6) colorextract = true;
 		if (c == 'n' || c == 'N')
 		{
 			if (!finished) cube.CubeModify(steps[solution_iterator]);
 			solution_iterator++;
 			
 		}
+		video.write(src);
 		//Sleep(33);
 	}
+	video.release();
 }
